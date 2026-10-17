@@ -1,0 +1,17 @@
+[property]
+gpu-id=0
+net-scale-factor=0.00392157
+model-color-format=0
+model-engine-file=/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/model_stage/vggt.fp16.plan
+infer-dims=3;518;1036
+network-input-order=0
+batch-size=1
+network-mode=2
+process-mode=1
+network-type=100
+output-blob-names=pose_enc;depth;depth_conf
+output-tensor-meta=1
+interval=0
+gie-unique-id=1
+maintain-aspect-ratio=0
+symmetric-padding=0

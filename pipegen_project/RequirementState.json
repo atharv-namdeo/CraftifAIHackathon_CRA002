@@ -1,0 +1,905 @@
+{
+  "analysis_state": {
+    "architecture": {
+      "connections": [
+        {
+          "from": "n1",
+          "to": "n2"
+        },
+        {
+          "from": "n2",
+          "to": "n3"
+        },
+        {
+          "from": "n3",
+          "to": "n4"
+        },
+        {
+          "from": "n4",
+          "to": "n5"
+        },
+        {
+          "from": "n5",
+          "to": "n6"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "n1",
+          "name": "Video input",
+          "short_description": "Reads the supplied video file."
+        },
+        {
+          "id": "n2",
+          "name": "Frame sampling",
+          "short_description": "Samples two video frames approximately one second apart."
+        },
+        {
+          "id": "n3",
+          "name": "VGGT preprocessing",
+          "short_description": "Converts frames to RGB, pads each to 518×518, and packs them into a 518×1036 FP32 input atlas."
+        },
+        {
+          "id": "n4",
+          "name": "VGGT ONNX inference",
+          "short_description": "Produces pose_enc, depth, and depth_conf tensors for the two views."
+        },
+        {
+          "id": "n5",
+          "name": "3D reconstruction and filtering",
+          "short_description": "Decodes camera poses, unprojects depth into 3D points, and applies confidence and Open3D filtering."
+        },
+        {
+          "id": "n6",
+          "name": "Reconstruction output",
+          "short_description": "Writes a colored PLY point cloud and accompanying metadata and geometry-ready event."
+        }
+      ]
+    },
+    "info": {
+      "model_paths": [
+        "/home/atharv/spectra/repo/models/vggt-onnx/vggt.onnx"
+      ],
+      "pipeline_command": "python vggt/vggt/dependency/distortion.py",
+      "project_name": "repo",
+      "project_path": "/home/atharv/spectra/repo"
+    },
+    "loop_count": 1,
+    "repo_url": "",
+    "tools_history": [
+      {
+        "result": "SPECTRA reconstructs 3D geometry from a video by sampling two frames approximately one second apart. It RGB-preprocesses and pads each frame to 518×518, then packs them into the fixed-size FP32 atlas required by VGGT. The VGGT ONNX model produces camera-pose encodings, depth, and depth-confidence maps; the decoder recovers poses and unprojects depth into a filtered point cloud. The pipeline writes a PLY cloud along with reconstruction metadata and a geometry-ready event.",
+        "tool": "_summary"
+      },
+      {
+        "result": "[read_file]: vggt/demo_viser.py: # Copyright (c) Meta Platforms, Inc. and affiliates.\n# All rights reserved.\n#\n# This source code is licensed under the license found in the\n# LICENSE file in the root directory of this source tree.\n\nimport os\nimport glob\nimport time\nimport threading\nimport argparse\nfrom typing import List, Optional\n\nimport numpy as np\nimport torch\nfrom tqdm.auto import tqdm\nimport viser\nimport viser.transforms as viser_tf\nimport cv2\n\n\ntry:\n    import onnxruntime\nexcept ImportError:\n    print(\"onnxruntime not fou",
+        "tool": "read_file"
+      },
+      {
+        "result": "[read_file]: scripts/make_demo_video.py: \"\"\"Render a 1-3 minute demo MP4 strictly from a real SPECTRA run directory.\n\nEvery number and image shown is read from the run's own files (frames, predictions.npz,\ncloud.ply, metadata.json, events.jsonl, run log). Nothing is synthesized or estimated.\n\"\"\"\nimport argparse\nimport json\nfrom pathlib import Path\nimport cv2\nimport numpy as np\nimport open3d as o3d\n\nW, H, FPS = 1280, 720, 30\nBG = (24, 22, 20)\nFG = (235, 235, 235)\nACCENT = (80, 200, 255)\nMUTED = (150, 150, 150)\n\n\ndef canvas():\n    return",
+        "tool": "read_file"
+      }
+    ]
+  },
+  "benchmark_readme": null,
+  "benchmark_subfolder": null,
+  "chat_history": [
+    {
+      "content": "SPECTRA: VGGT-only 3D geometric mapping from video. Custom model, do NOT use a catalog pipeline or substitute any detector/depth model.\n\nModel: my own ONNX at /home/atharv/spectra/model/vggt.onnx (VGGT-1B, opset 18, external weights in vggt.onnx.data in the same folder - keep them together). Source repo: /home/atharv/spectra/repo.\nInput tensor: \"images\" FP32 NCHW [1,3,518,1036], values 0-1, no extra normalization (VGGT normalizes internally).\nOutputs (raw tensors, no bbox parser): \"pose_enc\" [1,2,9], \"depth\" [1,2,518,518], \"depth_conf\" [1,2,518,518]. DeepStream: network-type=100, output-tensor-meta=1.\n\nPipeline: video file decode (/home/atharv/spectra/input/kitchen-sample.mp4) -> sample 2 frames ~1 s apart -> VGGT pad-preprocess each to 518x518 RGB -> pack side by side into a 1036x518 atlas -> TensorRT inference -> extract raw tensors -> decode camera poses + unproject depth into 3D points (spectra/deployment/contract.py) -> Open3D confidence/outlier filtering -> sinks: PLY point cloud + JSON event \"geometry_ready\" (action inspect_reconstruction, point count, PLY path, hashes).\n\nTarget GPU: RTX 3050 Laptop 4 GB. FP32 weights are 4.6 GB so build TensorRT in FP16 compute with FP32 inputs/outputs. Report unsupported ops or out-of-memory errorary, never metres.",
+      "role": "user"
+    },
+    {
+      "content": "You want a custom VGGT-only 3D reconstruction pipeline from the specified video, with the stated TensorRT configuration and a PLY reconstruction plus a `geometry_ready` JSON event. I’ve recorded the preprocessing, reconstruction, and filtering steps without substituting a catalog model or detector.\n\nInputs taken from your description: input1 · video file · kitchen-sample.mp4 · 778x520. Say **review inputs** to change them on a card.\n\nCheck where the results go and confirm.",
+      "role": "assistant"
+    },
+    {
+      "content": "Outputs (2):\nout1 · Metadata file · File events.json\nout2 · Saved images · Folder frames",
+      "role": "user"
+    },
+    {
+      "content": "Outputs confirmed: 2.\n\nA few questions about the scene and camera below: Continue applies what the card shows, Skip adds no step. Skip still records what the footage shows on its own: input1 moves.",
+      "role": "assistant"
+    },
+    {
+      "content": "Scene and camera: Does this camera move? Pans or moves · Hide before saving or sending? Nothing",
+      "role": "user"
+    },
+    {
+      "content": "Draft v1: **1 input(s)** → **3D geometric mapping, geometry_ready event** (+3 custom step(s)) → **metadata_file, saved_images**. Correct it here, or press **Finalize flow**.",
+      "role": "assistant"
+    },
+    {
+      "content": "finalize the flow",
+      "role": "user"
+    },
+    {
+      "content": "Flow locked. Now the details, one task at a time: 2 of 2 to go.\n\nThe VGGT-only 3D mapping task is specified: sample two frames about one second apart, run the stated TensorRT inference and reconstruction steps, and produce a filtered PLY point cloud. No further task-specific details need settling.\n\n**3D geometric mapping on input1 (video for VGGT 3D geometric mapping)** done. Next: **geometry_ready event on input1 (video for VGGT 3D geometric mapping)**.\n\nThe `geometry_ready` event is settled to emit when the reconstruction is ready, with the specified action, point count, PLY path, and hashes.\n\nAll tasks are detailed. This is the final flow with your conditions; continue to sources, or change something.",
+      "role": "assistant"
+    },
+    {
+      "content": "continue to sources",
+      "role": "user"
+    },
+    {
+      "content": "Code for 3D geometric mapping on input1 (video for VGGT 3D geometric mapping): choose a local repository folder or model file, or the catalog, for each task below, or paste a path here.",
+      "role": "assistant"
+    },
+    {
+      "content": "3D geometric mapping on input1 (video for VGGT 3D geometric mapping) → local /home/atharv/spectra/model/vggt.onnx · precision FP16",
+      "role": "user"
+    },
+    {
+      "content": "- **src1** · model → 3D geometric mapping on input1 (video for VGGT 3D geometric mapping) · no run script · `vggt.onnx` (scanned)\n\n1 of 12 checks need a fix:\n- ✗ src1: no code that runs vggt.onnx was found in /home/atharv/spectra/model. A model file alone has no pre- and post-processing; give the repository folder with the code that runs it.\n\nPaste the repository folder with the code that runs this model. Its own model files are used, so put your model file in that folder if it is a different one.",
+      "role": "assistant"
+    },
+    {
+      "content": "/home/atharv/spectra/repo",
+      "role": "user"
+    },
+    {
+      "content": "Replaced **src1**.\n\n- Your model `vggt.onnx` is not in `repo`, so that folder's own model files are used. Put your model file there to use it instead.\n- **src1** · repo → all tasks · `distortion.py` · `vggt.onnx` (scanned)\n\nAll 12 requirement checks pass.\n\nPress **Generate PIR** to build the pipeline graph. You can still change anything here first.",
+      "role": "assistant"
+    },
+    {
+      "content": "The run command is wrong. distortion.py is an upstream VGGT helper, not the entrypoint. Use this run command for src1 (run from /home/atharv/spectra/repo):\npython -m spectra.deployment.reference /home/atharv/spectra/input/kitchen-sample.mp4 --backend tensorrt --device cuda --bundle models/vggt-onnx --engine models/vggt-onnx/vggt.engine --output /home/atharv/spectra/output\nModel: models/vggt-onnx/vggt.onnx (same file as /home/atharv/spectra/model/vggt.onnx, with vggt.onnx.data next to it). Pre/post-processing is in spectra/deployment/contract.py, DeepStream app in spectra/deployment/deepstream.py.",
+      "role": "user"
+    },
+    {
+      "content": "Updated src1 to use the supplied VGGT reference run command.\n\nAll 12 requirement checks pass.\n- **src1** repo → all tasks\n\nPress **Generate PIR** to build the pipeline graph. You can still change anything here first.",
+      "role": "assistant"
+    },
+    {
+      "content": "Rescan src1 /home/atharv/spectra/repo — the entrypoint is ./run.sh at the repo root (bash run.sh), not vggt/vggt/dependency/distortion.py.",
+      "role": "user"
+    },
+    {
+      "content": "Updated src1’s run command to use the repository-root entrypoint.\n\nAll 12 requirement checks pass.\n- **src1** repo → all tasks\n\nPress **Generate PIR** to build the pipeline graph. You can still change anything here first.",
+      "role": "assistant"
+    },
+    {
+      "content": "The vggt_render step is currently a pass-through stub. Regenerate it to do the real decode: take the outputs pose_enc [1,2,9], depth [1,2,518,518], depth_conf [1,2,518,518]. Convert pose_enc (translation 3, quaternion 4, field of view 2) into camera extrinsics and intrinsics. Back-project the view-1 and view-2 depth into world points, keeping pixels with depth_conf at or above the 50th percentile. Write /home/atharv/spectra/output/cloud.ply and metadata.json, and add a \"geometry_ready\" event with the point count to events.json. Use std::string .c_str() when passing strings to render_meta field_s. Also, the model input must be two consecutive frames side by side (previous | current), each 518×518, giving 518×1036 — not one stretched frame.",
+      "role": "user"
+    },
+    {
+      "content": "Updated the VGGT decode and frame pairing, and added the requested metadata output and event details.\n\nAll 13 requirement checks pass.\n- **src1** repo → all tasks\n\nPress **Generate PIR** to build the pipeline graph. You can still change anything here first.\n\nKept Emit a geometry_ready event when the reconstruction is ready as the method of geometry_ready event (you said “JSON event \"geometry_ready\" (action inspect_reconstruction, point count, PLY path, hashes)”); say so to change it.",
+      "role": "assistant"
+    }
+  ],
+  "chat_name": "VGGT 3D Mapping Pipeline",
+  "checks": {
+    "failed": 0,
+    "groups": [
+      {
+        "failed": 0,
+        "name": "Inputs",
+        "passed": 1,
+        "warned": 0
+      },
+      {
+        "failed": 0,
+        "name": "Tasks",
+        "passed": 4,
+        "warned": 0
+      },
+      {
+        "failed": 0,
+        "name": "Sources",
+        "passed": 3,
+        "warned": 0
+      },
+      {
+        "failed": 0,
+        "name": "Outputs",
+        "passed": 3,
+        "warned": 0
+      },
+      {
+        "failed": 0,
+        "name": "Handoff",
+        "passed": 1,
+        "warned": 1
+      }
+    ],
+    "passed": true,
+    "results": [
+      {
+        "fix": null,
+        "group": "Inputs",
+        "id": "input.input1",
+        "message": "input1: /home/atharv/spectra/input/kitchen-sample.mp4 (778x520 · 4.0)",
+        "name": "input1 file",
+        "status": "pass"
+      },
+      {
+        "fix": "sources",
+        "group": "Tasks",
+        "id": "tasks.covered",
+        "message": "All tasks are covered.",
+        "name": "every task has a source",
+        "status": "pass"
+      },
+      {
+        "fix": null,
+        "group": "Tasks",
+        "id": "task.1.input",
+        "message": "3D geometric mapping runs on input1",
+        "name": "3D geometric mapping input",
+        "status": "pass"
+      },
+      {
+        "fix": null,
+        "group": "Tasks",
+        "id": "task.2.input",
+        "message": "geometry_ready event runs on input1",
+        "name": "geometry_ready event input",
+        "status": "pass"
+      },
+      {
+        "fix": null,
+        "group": "Sources",
+        "id": "source.src1.root",
+        "message": "src1: /home/atharv/spectra/repo",
+        "name": "src1 folder",
+        "status": "pass"
+      },
+      {
+        "fix": "reanalyse",
+        "group": "Sources",
+        "id": "source.src1.entry",
+        "message": "src1: `bash run.sh` → run.sh",
+        "name": "src1 run command",
+        "status": "pass"
+      },
+      {
+        "fix": null,
+        "group": "Sources",
+        "id": "source.src1.model.vggt.onnx",
+        "message": "src1: vggt.onnx reads fine.",
+        "name": "src1 model vggt.onnx",
+        "status": "pass"
+      },
+      {
+        "fix": null,
+        "group": "Outputs",
+        "id": "output.out1.destination",
+        "message": "out1: metadata_file → /home/atharv/spectra/output/events.json",
+        "name": "out1 destination",
+        "status": "pass"
+      },
+      {
+        "fix": null,
+        "group": "Outputs",
+        "id": "output.out2.destination",
+        "message": "out2: saved_images → /home/atharv/spectra/output/frames",
+        "name": "out2 destination",
+        "status": "pass"
+      },
+      {
+        "fix": null,
+        "group": "Outputs",
+        "id": "output.out3.destination",
+        "message": "out3: metadata_file → /home/atharv/spectra/output/metadata.json",
+        "name": "out3 destination",
+        "status": "pass"
+      },
+      {
+        "fix": "ask",
+        "group": "Tasks",
+        "id": "algorithm.2",
+        "message": "/home/atharv/spectra/repo/spectra/deployment/contract.py",
+        "name": "custom step 2 reference",
+        "status": "pass"
+      },
+      {
+        "fix": "ask",
+        "group": "Handoff",
+        "id": "contract",
+        "message": "1 task(s), 1 source(s), 1 model(s).",
+        "name": "handoff contract",
+        "status": "pass"
+      },
+      {
+        "fix": null,
+        "group": "Handoff",
+        "id": "pir.readiness",
+        "message": "PIR will read on its own: MISSING_MODEL_METADATA",
+        "name": "PIR readiness",
+        "status": "warn"
+      }
+    ],
+    "version": 6,
+    "warned": 1
+  },
+  "class_waivers": [],
+  "clone_base_path": "/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55",
+  "clone_path": "/home/atharv/spectra/repo",
+  "delivered_references": {
+    "/home/atharv/spectra/repo/spectra/deployment/contract.py": "1792081245101729600"
+  },
+  "flow_draft": {
+    "connections": [
+      {
+        "from": "input1",
+        "to": "task:3D geometric mapping@input1"
+      },
+      {
+        "from": "task:3D geometric mapping@input1",
+        "to": "task:geometry_ready event@input1"
+      },
+      {
+        "from": "task:3D geometric mapping@input1",
+        "to": "logic:1"
+      },
+      {
+        "from": "task:3D geometric mapping@input1",
+        "to": "logic:2"
+      },
+      {
+        "from": "task:3D geometric mapping@input1",
+        "to": "logic:3"
+      },
+      {
+        "from": "task:geometry_ready event@input1",
+        "to": "out1"
+      },
+      {
+        "from": "logic:1",
+        "to": "out1"
+      },
+      {
+        "from": "logic:2",
+        "to": "out1"
+      },
+      {
+        "from": "logic:3",
+        "to": "out1"
+      },
+      {
+        "from": "task:geometry_ready event@input1",
+        "to": "out2"
+      },
+      {
+        "from": "logic:1",
+        "to": "out2"
+      },
+      {
+        "from": "logic:2",
+        "to": "out2"
+      },
+      {
+        "from": "logic:3",
+        "to": "out2"
+      },
+      {
+        "from": "task:geometry_ready event@input1",
+        "to": "out3"
+      },
+      {
+        "from": "logic:1",
+        "to": "out3"
+      },
+      {
+        "from": "logic:2",
+        "to": "out3"
+      },
+      {
+        "from": "logic:3",
+        "to": "out3"
+      }
+    ],
+    "finalized": true,
+    "label": "Final flow · with your conditions",
+    "nodes": [
+      {
+        "id": "input1",
+        "kind": "input",
+        "name": "input1 · video for VGGT 3D geometric mapping",
+        "short_description": "video file · kitchen-sample.mp4 · 778x520"
+      },
+      {
+        "id": "task:3D geometric mapping@input1",
+        "kind": "task",
+        "name": "3D geometric mapping",
+        "short_description": "Use the custom VGGT-1B ONNX model at /home/atharv/spectra/model/vggt.onnx; keep its external weights file vggt.onnx.data alongside it. Do not use a catalog pipeline or substitute any detector or depth model. Sample two consecutive video frames, previous | current. Pad-preprocess each frame to 518x518 RGB, pack side by side into a 518x1036 atlas, and run TensorRT inference. Input tensor: images, FP32 NCHW [1,3,518,1036], values 0-1 with no extra normalization because VGGT normalizes internally. Extract raw outputs without a bbox parser: pose_enc [1,2,9], depth [1,2,518,518], depth_conf [1,2,518,518]. Convert pose_enc (translation 3, quaternion 4, field of view 2) into camera extrinsics and intrinsics. Back-project both views' depth into world points, retaining pixels whose depth_conf is at or above the 50th percentile. Apply Open3D outlier filtering to the retained points. Write /home/atharv/spectra/output/cloud.ply and /home/atharv/spectra/output/metadata.json. Add a geometry_ready event with the point count to /home/atharv/spectra/output/events.json. DeepStream settings: network-type=100, output-tensor-meta=1. Use std::string .c_str() when passing strings to render_meta field_s. Report unsupported ops or out-of-memory errors, never metres. Source repo: /home/atharv/spectra/repo."
+      },
+      {
+        "id": "task:geometry_ready event@input1",
+        "kind": "task",
+        "name": "geometry_ready event",
+        "short_description": "method: Emit a geometry_ready event when the reconstruction is ready (you said “JSON event \"geometry_ready\" (action inspect_reconstruction, point count, PLY path, hashes)”) · Emit a JSON event named geometry_ready to /home/atharv/spectra/output/events.json with action inspect_reconstruction, point count, PLY path, and hashes."
+      },
+      {
+        "id": "logic:1",
+        "kind": "logic",
+        "name": "VGGT two-frame atlas preprocessing",
+        "short_description": "Sample two consecutive frames (previous | current); pad-preprocess each to 518x518 RGB and pack them side by side into a 518x1036 atlas. Supply FP32 NCHW [1,3,518,1036] values 0-1 without extra normalization."
+      },
+      {
+        "id": "logic:2",
+        "kind": "logic",
+        "name": "Decode camera poses and unproject depth",
+        "short_description": "Convert pose_enc [1,2,9] (translation 3, quaternion 4, field of view 2) into camera extrinsics and intrinsics. Back-project view-1 and view-2 depth into world points, keeping pixels with depth_conf at or above the 50th percentile."
+      },
+      {
+        "id": "logic:3",
+        "kind": "logic",
+        "name": "Open3D confidence and outlier filtering",
+        "short_description": "Apply Open3D confidence/outlier filtering to the reconstructed 3D points."
+      },
+      {
+        "id": "out1",
+        "kind": "output",
+        "name": "out1 · metadata_file",
+        "short_description": "metadata_file · url /home/atharv/spectra/output/events.json"
+      },
+      {
+        "id": "out2",
+        "kind": "output",
+        "name": "out2 · saved_images",
+        "short_description": "saved_images · url /home/atharv/spectra/output/frames"
+      },
+      {
+        "id": "out3",
+        "kind": "output",
+        "name": "out3 · metadata_file",
+        "short_description": "metadata_file · url /home/atharv/spectra/output/metadata.json"
+      }
+    ],
+    "version": 5
+  },
+  "form_seq": 4,
+  "mode": null,
+  "pending_form": {},
+  "pending_source": {},
+  "phase": "complete",
+  "pipeline_information": {
+    "model_paths": [
+      "/home/atharv/spectra/repo/models/vggt-onnx/vggt.onnx"
+    ],
+    "pipeline_command": "bash run.sh",
+    "project_path": "/home/atharv/spectra/repo"
+  },
+  "pipeline_requirements": {
+    "extras": {
+      "compile": {
+        "batch_size": 1,
+        "input_output_precision": "FP32",
+        "model_input_shape": "[1,3,518,1036]",
+        "precision": "fp16"
+      },
+      "device": "RTX 3050 Laptop 4 GB",
+      "input_roles": {
+        "input1": "video for VGGT 3D geometric mapping"
+      },
+      "scene_step": {
+        "advice": [],
+        "answered": {
+          "motion__input1": "moves",
+          "privacy__input1": [
+            "nothing"
+          ]
+        },
+        "declined": [],
+        "inputs": {
+          "input1": {
+            "basis": {
+              "asks": [
+                "privacy"
+              ],
+              "kind": "video file",
+              "mtime": 1792253501.2989547,
+              "size": 832002,
+              "tasks": [
+                "3D geometric mapping@input1"
+              ],
+              "url": "/home/atharv/spectra/input/kitchen-sample.mp4"
+            },
+            "cues": [
+              "camera_moving"
+            ],
+            "duty": {
+              "colour_cast": 1.0,
+              "dock_daylight": 0.0,
+              "haze": 0.333,
+              "low_light_after_dark": 0.0
+            },
+            "evidence": [
+              "Most of the picture changes from one frame to the next (91% of areas), so the camera moves."
+            ],
+            "footage": {
+              "chroma_offset": 0.133,
+              "clipped_fraction": 0.0,
+              "dark_fraction": 0.058,
+              "fps": 4.0,
+              "frames": 8,
+              "height": 520,
+              "mean_chroma": 22.7,
+              "motion": "moving",
+              "noise": 0.9,
+              "p50": 0.537,
+              "rms_contrast": 0.184,
+              "rules": [
+                "camera_moving"
+              ],
+              "samples": 3,
+              "source": "video file",
+              "suggest": [
+                "camera_moving"
+              ],
+              "width": 778
+            },
+            "said": {},
+            "skipped": false
+          }
+        },
+        "ledger": [],
+        "needs": [],
+        "privacy_source": [],
+        "rules": {
+          "camera_angled": [],
+          "camera_fixed": [],
+          "camera_moving": [
+            "input1"
+          ],
+          "camera_shakes": [],
+          "motion_unknown": [],
+          "no_cloud": [],
+          "privacy": [],
+          "small_objects": [],
+          "store_events_only": []
+        },
+        "version": 1
+      }
+    },
+    "inputs": [
+      {
+        "data_kind": [
+          "frames"
+        ],
+        "fps": 4.0,
+        "id": "input1",
+        "resolution": "778x520",
+        "role": "video for VGGT 3D geometric mapping",
+        "type": "video file",
+        "url": "/home/atharv/spectra/input/kitchen-sample.mp4"
+      }
+    ],
+    "needs_model": null,
+    "outputs": [
+      {
+        "id": "out1",
+        "type": "metadata_file",
+        "url": "/home/atharv/spectra/output/events.json"
+      },
+      {
+        "id": "out2",
+        "type": "saved_images",
+        "url": "/home/atharv/spectra/output/frames"
+      },
+      {
+        "id": "out3",
+        "type": "metadata_file",
+        "url": "/home/atharv/spectra/output/metadata.json"
+      }
+    ],
+    "parallel": false,
+    "special_algorithms": [
+      {
+        "applies_to": [
+          "3D geometric mapping@input1"
+        ],
+        "category": "pre_nn_conditioning",
+        "confirmed": true,
+        "description": "Sample two consecutive frames (previous | current); pad-preprocess each to 518x518 RGB and pack them side by side into a 518x1036 atlas. Supply FP32 NCHW [1,3,518,1036] values 0-1 without extra normalization.",
+        "name": "VGGT two-frame atlas preprocessing",
+        "reference_path": null
+      },
+      {
+        "applies_to": [
+          "3D geometric mapping@input1"
+        ],
+        "category": "geometry",
+        "confirmed": true,
+        "description": "Convert pose_enc [1,2,9] (translation 3, quaternion 4, field of view 2) into camera extrinsics and intrinsics. Back-project view-1 and view-2 depth into world points, keeping pixels with depth_conf at or above the 50th percentile.",
+        "name": "Decode camera poses and unproject depth",
+        "reference_path": "/home/atharv/spectra/repo/spectra/deployment/contract.py"
+      },
+      {
+        "applies_to": [
+          "3D geometric mapping@input1"
+        ],
+        "category": "other",
+        "confirmed": true,
+        "description": "Apply Open3D confidence/outlier filtering to the reconstructed 3D points.",
+        "name": "Open3D confidence and outlier filtering",
+        "reference_path": null
+      },
+      {
+        "applies_to": [
+          "3D geometric mapping@input1"
+        ],
+        "category": "other",
+        "confirmed": true,
+        "description": "Emit a geometry_ready event to /home/atharv/spectra/output/events.json with action inspect_reconstruction, point count, PLY path, and hashes.",
+        "name": "geometry_ready event",
+        "parameters": {
+          "action": "inspect_reconstruction",
+          "event": "geometry_ready",
+          "fields": [
+            "point count",
+            "PLY path",
+            "hashes"
+          ],
+          "method": "Emit a geometry_ready event when the reconstruction is ready"
+        },
+        "reference_path": null
+      }
+    ],
+    "target_classes": [],
+    "task_kind": null,
+    "tasks": [
+      {
+        "details": "Use the custom VGGT-1B ONNX model at /home/atharv/spectra/model/vggt.onnx; keep its external weights file vggt.onnx.data alongside it. Do not use a catalog pipeline or substitute any detector or depth model. Sample two consecutive video frames, previous | current. Pad-preprocess each frame to 518x518 RGB, pack side by side into a 518x1036 atlas, and run TensorRT inference. Input tensor: images, FP32 NCHW [1,3,518,1036], values 0-1 with no extra normalization because VGGT normalizes internally. Extract raw outputs without a bbox parser: pose_enc [1,2,9], depth [1,2,518,518], depth_conf [1,2,518,518]. Convert pose_enc (translation 3, quaternion 4, field of view 2) into camera extrinsics and intrinsics. Back-project both views' depth into world points, retaining pixels whose depth_conf is at or above the 50th percentile. Apply Open3D outlier filtering to the retained points. Write /home/atharv/spectra/output/cloud.ply and /home/atharv/spectra/output/metadata.json. Add a geometry_ready event with the point count to /home/atharv/spectra/output/events.json. DeepStream settings: network-type=100, output-tensor-meta=1. Use std::string .c_str() when passing strings to render_meta field_s. Report unsupported ops or out-of-memory errors, never metres. Source repo: /home/atharv/spectra/repo.",
+        "for_input": "input1",
+        "needs_model": true,
+        "target_classes": [],
+        "type": "3D geometric mapping"
+      },
+      {
+        "derives_from": [
+          "3D geometric mapping@input1"
+        ],
+        "details": "Emit a JSON event named geometry_ready to /home/atharv/spectra/output/events.json with action inspect_reconstruction, point count, PLY path, and hashes.",
+        "for_input": "input1",
+        "method": {
+          "catalogue": null,
+          "from": "words",
+          "name": "Emit a geometry_ready event when the reconstruction is ready",
+          "params": {
+            "action": "inspect_reconstruction",
+            "event": "geometry_ready",
+            "fields": [
+              "point count",
+              "PLY path",
+              "hashes"
+            ]
+          },
+          "quote": "JSON event \"geometry_ready\" (action inspect_reconstruction, point count, PLY path, hashes)"
+        },
+        "needs_model": false,
+        "target_classes": [],
+        "type": "geometry_ready event"
+      }
+    ],
+    "user_intent_summary": "Build a custom VGGT-only 3D geometric mapping pipeline from consecutive video frames, write a filtered PLY point cloud and metadata, then emit a geometry_ready JSON event."
+  },
+  "repo_sources": [
+    {
+      "_reanalysed": true,
+      "analysis_summaries": [
+        "SPECTRA reconstructs 3D geometry from a video by sampling two frames approximately one second apart. It RGB-preprocesses and pads each frame to 518×518, then packs them into the fixed-size FP32 atlas required by VGGT. The VGGT ONNX model produces camera-pose encodings, depth, and depth-confidence maps; the decoder recovers poses and unprojects depth into a filtered point cloud. The pipeline writes a PLY cloud along with reconstruction metadata and a geometry-ready event.",
+        "[read_file]: vggt/demo_viser.py: # Copyright (c) Meta Platforms, Inc. and affiliates.\n# All rights reserved.\n#\n# This source code is licensed under the license found in the\n# LICENSE file in the root directory of this source tree.\n\nimport os\nimport glob\nimport time\nimport threading\nimport argparse\nfrom typing import List, Optional\n\nimport numpy as np\nimport torch\nfrom tqdm.auto import tqdm\nimport viser\nimport viser.transforms as viser_tf\nimport cv2\n\n\ntry:\n    import onnxruntime\nexcept ImportError:\n    print(\"onnxruntime not fou",
+        "[read_file]: scripts/make_demo_video.py: \"\"\"Render a 1-3 minute demo MP4 strictly from a real SPECTRA run directory.\n\nEvery number and image shown is read from the run's own files (frames, predictions.npz,\ncloud.ply, metadata.json, events.jsonl, run log). Nothing is synthesized or estimated.\n\"\"\"\nimport argparse\nimport json\nfrom pathlib import Path\nimport cv2\nimport numpy as np\nimport open3d as o3d\n\nW, H, FPS = 1280, 720, 30\nBG = (24, 22, 20)\nFG = (235, 235, 235)\nACCENT = (80, 200, 255)\nMUTED = (150, 150, 150)\n\n\ndef canvas():\n    return"
+      ],
+      "architecture": {
+        "connections": [
+          {
+            "from": "n1",
+            "to": "n2"
+          },
+          {
+            "from": "n2",
+            "to": "n3"
+          },
+          {
+            "from": "n3",
+            "to": "n4"
+          },
+          {
+            "from": "n4",
+            "to": "n5"
+          },
+          {
+            "from": "n5",
+            "to": "n6"
+          }
+        ],
+        "nodes": [
+          {
+            "id": "n1",
+            "name": "Video input",
+            "short_description": "Reads the supplied video file."
+          },
+          {
+            "id": "n2",
+            "name": "Frame sampling",
+            "short_description": "Samples two video frames approximately one second apart."
+          },
+          {
+            "id": "n3",
+            "name": "VGGT preprocessing",
+            "short_description": "Converts frames to RGB, pads each to 518×518, and packs them into a 518×1036 FP32 input atlas."
+          },
+          {
+            "id": "n4",
+            "name": "VGGT ONNX inference",
+            "short_description": "Produces pose_enc, depth, and depth_conf tensors for the two views."
+          },
+          {
+            "id": "n5",
+            "name": "3D reconstruction and filtering",
+            "short_description": "Decodes camera poses, unprojects depth into 3D points, and applies confidence and Open3D filtering."
+          },
+          {
+            "id": "n6",
+            "name": "Reconstruction output",
+            "short_description": "Writes a colored PLY point cloud and accompanying metadata and geometry-ready event."
+          }
+        ]
+      },
+      "class_coverage": {},
+      "class_coverage_signature": "01aaf77daaf9aab7e7de8713",
+      "covers_tasks": [
+        "ALL"
+      ],
+      "id": "src1",
+      "label_space": {
+        "count": 41,
+        "labels": [
+          "apple",
+          "backpack",
+          "banana",
+          "baseballbat",
+          "baseballglove",
+          "bench",
+          "bicycle",
+          "bottle",
+          "bowl",
+          "broccoli",
+          "cake",
+          "car",
+          "carrot",
+          "cellphone",
+          "chair",
+          "cup",
+          "donut",
+          "hairdryer",
+          "handbag",
+          "hydrant",
+          "keyboard",
+          "laptop",
+          "microwave",
+          "motorcycle",
+          "mouse",
+          "orange",
+          "parkingmeter",
+          "pizza",
+          "plant",
+          "stopsign",
+          "teddybear",
+          "toaster",
+          "toilet",
+          "toybus",
+          "toyplane",
+          "toytrain",
+          "toytruck",
+          "tv",
+          "umbrella",
+          "vase",
+          "wineglass"
+        ],
+        "source": "vggt/training/data/datasets/co3d.py",
+        "version": 3
+      },
+      "model_paths": [
+        "/home/atharv/spectra/repo/models/vggt-onnx/vggt.onnx"
+      ],
+      "model_roles": [
+        {
+          "for_task": "3D geometric mapping@input1",
+          "path": "/home/atharv/spectra/repo/models/vggt-onnx/vggt.onnx",
+          "role": "VGGT inference produces two-view camera pose encodings, depth maps, and depth confidence maps used to reconstruct a 3D p"
+        }
+      ],
+      "pipeline_command": "bash run.sh",
+      "project_path": "/home/atharv/spectra/repo",
+      "scan_hash": "a85d9341d91073a5dac48d5fc9cfccee937dd44b99e021e4a7cc50a355416505",
+      "source": "local",
+      "subfolder": null,
+      "unused_models": []
+    }
+  ],
+  "req_stage": "complete",
+  "requirement_profile": {
+    "clarify": {},
+    "code": [],
+    "inputs": {
+      "input1": {}
+    },
+    "outputs": {
+      "out1": {},
+      "out2": {}
+    },
+    "tasks": {}
+  },
+  "scan_hits": [
+    {
+      "analysis_cached": false,
+      "cache_hit": false,
+      "hash": "e46fdd7debdac721ff28e278544a8405f7fa26bd41f6e33a5768ed77f123628c",
+      "source": "src1"
+    },
+    {
+      "analysis_cached": false,
+      "cache_hit": false,
+      "hash": "a85d9341d91073a5dac48d5fc9cfccee937dd44b99e021e4a7cc50a355416505",
+      "source": "src1"
+    }
+  ],
+  "source_strategy": "combined",
+  "task_checklist": {
+    "active": null,
+    "items": [
+      {
+        "id": 1,
+        "indices": [
+          0
+        ],
+        "keys": [
+          "3D geometric mapping@input1"
+        ],
+        "label": "3D geometric mapping on input1 (video for VGGT 3D geometric mapping)",
+        "round": 0,
+        "status": "done",
+        "summary": "Custom VGGT-1B mapping from input1 with the specified two-frame preprocessing, TensorRT outputs, pose/depth decoding, Open3D filtering, and PLY output."
+      },
+      {
+        "id": 2,
+        "indices": [
+          1
+        ],
+        "keys": [
+          "geometry_ready event@input1"
+        ],
+        "label": "geometry_ready event on input1 (video for VGGT 3D geometric mapping)",
+        "round": 0,
+        "status": "done",
+        "summary": "Emit a geometry_ready JSON event when reconstruction is ready, including action inspect_reconstruction, point count, PLY path, and hashes."
+      }
+    ],
+    "version": 6
+  },
+  "typed_on_cards": {
+    "10": [
+      "local",
+      "/home/atharv/spectra/model/vggt.onnx"
+    ],
+    "2": [
+      "/home/atharv/spectra/output/events.json",
+      "/home/atharv/spectra/output/frames"
+    ],
+    "4": []
+  },
+  "understanding": {
+    "answered": {},
+    "asked": [],
+    "defaulted": {
+      "inputs": {},
+      "outputs": {}
+    },
+    "deferred": [],
+    "input_count": 1,
+    "input_fields": [],
+    "notes": [
+      "turn 1: Recorded the only described input as a video file with frame payload; its resolution and frame rate are left for host probing.",
+      "turn 1: The requested PLY and JSON sinks are represented as file outputs; their destinations were not specified and are left for the host to collect.",
+      "turn 1: Recorded FP16 compute and FP32 inputs/outputs, plus the explicitly stated target GPU and model input shape.",
+      "turn 1: Kept the reconstruction as a custom model task and the geometry_ready event as a separate result derived from that reconstruction."
+    ],
+    "output_fields": [],
+    "question_turns": 0,
+    "taken": [
+      "inputs"
+    ]
+  }
+}

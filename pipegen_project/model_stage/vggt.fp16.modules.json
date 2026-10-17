@@ -1,0 +1,42 @@
+{
+  "blocks": [
+    {
+      "name": "Initial layers 1\u2013445",
+      "operations": "kgen\u00d7226 + gemm\u00d7206 + Reformat\u00d75",
+      "precision": "Mixed",
+      "time_ms": 603.295438,
+      "pct": 40.62,
+      "start_index": 0,
+      "end_index": 444,
+      "layer_count": 445
+    },
+    {
+      "name": "Middle layers 446\u2013891",
+      "operations": "kgen\u00d7279 + gemm\u00d7167",
+      "precision": "Mixed",
+      "time_ms": 573.75363,
+      "pct": 38.63,
+      "start_index": 445,
+      "end_index": 890,
+      "layer_count": 446
+    },
+    {
+      "name": "Final layers 892\u20131336",
+      "operations": "kgen\u00d7198 + gemm\u00d7171 + CaskConvolution\u00d730",
+      "precision": "Mixed",
+      "time_ms": 308.026106,
+      "pct": 20.74,
+      "start_index": 891,
+      "end_index": 1335,
+      "layer_count": 445
+    }
+  ],
+  "source": "ranges",
+  "architecture": "",
+  "total_ms": 1485.075173,
+  "layer_count": 1336,
+  "warnings": [
+    "Could not identify the architecture (RuntimeError), so the layers below are grouped by position, not by module."
+  ],
+  "fingerprint": "1336:1485.075:model.aggregator._resnet_std:Reformatting CopyNode for Output Tensor 2 to {ForeignNode[expand_7...node_Reshape_27220]}"
+}

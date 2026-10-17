@@ -1,0 +1,882 @@
+{
+  "loop": {
+    "next_file": null,
+    "next_task": null,
+    "projectTree": {},
+    "target_function": {
+      "name": "read_file",
+      "parameters": {}
+    },
+    "visited_steps": [
+      "/home/atharv/spectra/repo/spectra/deployment/wrapper.py",
+      "/home/atharv/spectra/repo/spectra/deployment/reference.py",
+      "/home/atharv/spectra/repo/vggt/vggt/models/vggt.py",
+      "/home/atharv/spectra/repo/spectra/deployment/runtime.py",
+      "/home/atharv/spectra/repo/vggt/vggt/utils/geometry.py",
+      "/home/atharv/spectra/repo/spectra/reconstruction.py",
+      "/home/atharv/spectra/repo/vggt/vggt/dependency/distortion.py",
+      "/home/atharv/spectra/repo/vggt/demo_viser.py",
+      "/home/atharv/spectra/repo/scripts/build_engine.py",
+      "/home/atharv/spectra/repo/vggt/vggt/heads/dpt_head.py",
+      "/home/atharv/spectra/repo/vggt/vggt/utils/load_fn.py",
+      "/home/atharv/spectra/repo/vggt/vggt/heads/head_act.py",
+      "/home/atharv/spectra/repo/vggt/vggt/utils/pose_enc.py",
+      "/home/atharv/spectra/repo/spectra/config.py",
+      "/home/atharv/spectra/repo/scripts/make_demo_video.py",
+      "/home/atharv/spectra/repo/spectra/deployment/contract.py",
+      "/home/atharv/spectra/repo/vggt/vggt/models/aggregator.py",
+      "/home/atharv/spectra/repo/spectra/inputs.py",
+      "/home/atharv/spectra/repo/vggt/vggt/utils/rotation.py"
+    ]
+  },
+  "pipeline_ir": {
+    "connections": [
+      [
+        "p01o_frame",
+        "p02i_frame"
+      ],
+      [
+        "p01o_source",
+        "p02i_source"
+      ],
+      [
+        "p02o_frame",
+        "p10i_frame"
+      ],
+      [
+        "p02o_atlas",
+        "p03i_atlas"
+      ],
+      [
+        "p02o_pair",
+        "p03i_pair"
+      ],
+      [
+        "p03o_images",
+        "p04i_images"
+      ],
+      [
+        "p03o_images",
+        "p06i_atlas"
+      ],
+      [
+        "p03o_pair",
+        "p05i_pair"
+      ],
+      [
+        "p04o_pose",
+        "p05i_pose"
+      ],
+      [
+        "p04o_depth",
+        "p05i_depth"
+      ],
+      [
+        "p04o_conf",
+        "p05i_conf"
+      ],
+      [
+        "p04o_runtime",
+        "p05i_runtime"
+      ],
+      [
+        "p05o_raw",
+        "p06i_raw"
+      ],
+      [
+        "p06o_predictions",
+        "p07i_predictions"
+      ],
+      [
+        "p07o_manifest",
+        "p08i_manifest"
+      ],
+      [
+        "p07o_manifest",
+        "p10i_manifest"
+      ],
+      [
+        "p08o_event",
+        "p09i_event"
+      ]
+    ],
+    "nodes": [
+      {
+        "description": "Decode the complete video with frame indices and timestamps.",
+        "id": 1,
+        "name": "file",
+        "ports": [
+          {
+            "direction": "output",
+            "format": {
+              "color": "BGR",
+              "encoding": "raw"
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 4
+            },
+            "id": "p01o_frame",
+            "tensor": {
+              "dtype": "uint8",
+              "shape": [
+                520,
+                778,
+                3
+              ]
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 4
+            },
+            "id": "p01o_source",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "import cv2\npath = '/home/atharv/spectra/input/kitchen-sample.mp4'\ncap = cv2.VideoCapture(path)\nif not cap.isOpened(): raise ValueError(f'Cannot decode video: {path}')\nfps = cap.get(cv2.CAP_PROP_FPS)\nif fps <= 0: cap.release(); raise ValueError('Video has invalid frame rate')\nindex = 0\ntry:\n    while True:\n        ok, frame = cap.read()\n        if not ok: break\n        # Emit both ports together for every decoded frame; do not truncate the video.\n        emit(p01o_frame=frame, p01o_source={'frame_index': index, 'timestamp_seconds': index / fps, 'fps': fps, 'source': path})\n        index += 1\nfinally:\n    cap.release()",
+        "resolution": [
+          778,
+          520
+        ],
+        "type": "input",
+        "url": "file:///home/atharv/spectra/input/kitchen-sample.mp4"
+      },
+      {
+        "category": "pre_nn_conditioning",
+        "description": "Sample two timed views and construct RGB atlases.",
+        "external_assets": [],
+        "id": 2,
+        "inputs": [
+          "image",
+          "source_metadata"
+        ],
+        "name": "VGGT two-frame atlas preprocessing",
+        "outputs": [
+          "image",
+          "atlas",
+          "pair_metadata"
+        ],
+        "parameters": {
+          "pad_value": 255,
+          "patch_multiple": 14,
+          "sample_seconds": 1.0,
+          "view_size": 518,
+          "views": 2
+        },
+        "placement": {
+          "attach_point": null,
+          "position": "pre_pgie"
+        },
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": "BGR",
+              "encoding": "raw"
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 4
+            },
+            "id": "p02i_frame",
+            "tensor": {
+              "dtype": "uint8",
+              "shape": [
+                520,
+                778,
+                3
+              ]
+            }
+          },
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 4
+            },
+            "id": "p02i_source",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": "BGR",
+              "encoding": "raw"
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 4
+            },
+            "id": "p02o_frame",
+            "tensor": {
+              "dtype": "uint8",
+              "shape": [
+                520,
+                778,
+                3
+              ]
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": "RGB",
+              "encoding": "raw"
+            },
+            "framerate": null,
+            "id": "p02o_atlas",
+            "tensor": {
+              "dtype": "fp32",
+              "shape": [
+                1,
+                3,
+                518,
+                1036
+              ]
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p02o_pair",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "import numpy as np\nimport cv2\nfrom PIL import Image\n# Persistent per-input state: pending=[]; next_pair_id=0. Process every decoded frame.\ndef view_from_bgr(frame):\n    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)\n    image = Image.fromarray(rgb)\n    width, height = image.size\n    target = parameters['view_size']\n    multiple = parameters['patch_multiple']\n    if width >= height:\n        new_width = target\n        new_height = round(height * (new_width / width) / multiple) * multiple\n    else:\n        new_height = target\n        new_width = round(width * (new_height / height) / multiple) * multiple\n    image = image.resize((new_width, new_height), Image.Resampling.BICUBIC)\n    view = np.asarray(image, dtype=np.float32).transpose(2, 0, 1) / 255.0\n    h_padding, w_padding = target - view.shape[1], target - view.shape[2]\n    top, left = h_padding // 2, w_padding // 2\n    view = np.pad(view, ((0, 0), (top, h_padding - top), (left, w_padding - left)), constant_values=parameters['pad_value'] / 255.0)\n    return np.ascontiguousarray(view, dtype=np.float32)\ndef process(frame, source_metadata):\n    global pending, next_pair_id\n    # The unchanged original-size frame is emitted on EVERY invocation.\n    emit(p02o_frame=frame)\n    stride = max(1, round(source_metadata['fps'] * parameters['sample_seconds']))\n    if source_metadata['frame_index'] % stride != 0: return\n    pending.append((view_from_bgr(frame), dict(source_metadata)))\n    if len(pending) < parameters['views']: return\n    if len(pending) != parameters['views']: raise ValueError('Expected exactly two views')\n    views = np.stack([item[0] for item in pending])\n    if views.shape != (2, 3, 518, 518) or not np.isfinite(views).all() or views.min() < 0 or views.max() > 1:\n        raise ValueError('Invalid preprocessed VGGT views')\n    atlas = np.ascontiguousarray(np.concatenate(list(views), axis=-1)[None], dtype=np.float32)\n    pair = {'pair_id': next_pair_id, 'frames': [item[1] for item in pending]}\n    pending = []\n    next_pair_id += 1\n    emit(p02o_atlas=atlas, p02o_pair=pair)\n# An incomplete final pair produces no inference, but its frames have already flowed to the image sink.",
+        "reference_path": null,
+        "runs_every_frame": true,
+        "state_key": "global",
+        "triggers": [],
+        "type": "custom"
+      },
+      {
+        "color_order": "RGB",
+        "description": "Validate the prepared atlas without applying duplicate normalization.",
+        "id": 3,
+        "mean": null,
+        "normalization": 0.00392156862745098,
+        "offset": null,
+        "pad_value": 255,
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": "RGB",
+              "encoding": "raw"
+            },
+            "framerate": null,
+            "id": "p03i_atlas",
+            "tensor": {
+              "dtype": "fp32",
+              "shape": [
+                1,
+                3,
+                518,
+                1036
+              ]
+            }
+          },
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p03i_pair",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": "RGB",
+              "encoding": "raw"
+            },
+            "framerate": null,
+            "id": "p03o_images",
+            "tensor": {
+              "dtype": "fp32",
+              "shape": [
+                1,
+                3,
+                518,
+                1036
+              ]
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p03o_pair",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "import numpy as np\n# The preceding confirmed custom step performs the source's bicubic,\n# aspect-preserving, white-pad transform on each view and packs them.\n# VGGT's mean/std operation is inside the ONNX model, not applied here.\ndef process(atlas, pair):\n    images = np.asarray(atlas)\n    if images.dtype != np.float32 or images.shape != (1, 3, 518, 1036):\n        raise ValueError('VGGT images must be FP32 NCHW [1,3,518,1036]')\n    if not np.isfinite(images).all() or images.min() < 0 or images.max() > 1:\n        raise ValueError('VGGT RGB images must be finite in [0,1]')\n    if len(pair['frames']) != 2: raise ValueError('Missing two-view source metadata')\n    return {'p03o_images': np.ascontiguousarray(images), 'p03o_pair': pair}",
+        "resize": [
+          1036,
+          518
+        ],
+        "resize_mode": "letterbox",
+        "scale": 0.00392156862745098,
+        "std": null,
+        "type": "preprocess"
+      },
+      {
+        "batchSize": 1,
+        "description": "Run custom VGGT TensorRT inference with raw outputs.",
+        "id": 4,
+        "layout": "NCHW",
+        "model": {
+          "inputs": [
+            {
+              "dtype": "fp32",
+              "name": "images",
+              "shape": [
+                1,
+                3,
+                518,
+                1036
+              ]
+            }
+          ],
+          "name": "custom VGGT-1B two-view atlas",
+          "outputs": [
+            {
+              "dtype": "fp32",
+              "name": "pose_enc",
+              "shape": [
+                1,
+                2,
+                9
+              ]
+            },
+            {
+              "dtype": "fp32",
+              "name": "depth",
+              "shape": [
+                1,
+                2,
+                518,
+                518
+              ]
+            },
+            {
+              "dtype": "fp32",
+              "name": "depth_conf",
+              "shape": [
+                1,
+                2,
+                518,
+                518
+              ]
+            }
+          ],
+          "parameter_count": 1157966225,
+          "type": "engine",
+          "url": "/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/model_stage/vggt.fp16.plan",
+          "source_onnx": "/home/atharv/spectra/repo/models/vggt-onnx/vggt.onnx"
+        },
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": "RGB",
+              "encoding": "raw"
+            },
+            "framerate": null,
+            "id": "p04i_images",
+            "tensor": {
+              "dtype": "fp32",
+              "shape": [
+                1,
+                3,
+                518,
+                1036
+              ]
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p04o_pose",
+            "tensor": {
+              "dtype": "fp32",
+              "shape": [
+                1,
+                2,
+                9
+              ]
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p04o_depth",
+            "tensor": {
+              "dtype": "fp32",
+              "shape": [
+                1,
+                2,
+                518,
+                518
+              ]
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p04o_conf",
+            "tensor": {
+              "dtype": "fp32",
+              "shape": [
+                1,
+                2,
+                518,
+                518
+              ]
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p04o_runtime",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "import hashlib\nfrom pathlib import Path\nimport numpy as np\nimport torch\nimport tensorrt as trt\nmodel_path = Path('/home/atharv/spectra/repo/models/vggt-onnx/vggt.onnx')\nweights_path = model_path.with_name('vggt.onnx.data')\nengine_path = model_path.with_name('vggt.engine')\nexpected = {'pose_enc': (1, 2, 9), 'depth': (1, 2, 518, 518), 'depth_conf': (1, 2, 518, 518)}\ndef sha256(path):\n    digest = hashlib.sha256()\n    with path.open('rb') as stream:\n        for chunk in iter(lambda: stream.read(8 * 1024 * 1024), b''): digest.update(chunk)\n    return digest.hexdigest()\ndef create_engine():\n    if not model_path.is_file() or not weights_path.is_file():\n        raise FileNotFoundError('VGGT ONNX and its external vggt.onnx.data must remain together')\n    logger = trt.Logger(trt.Logger.WARNING)\n    if not engine_path.is_file():\n        builder = trt.Builder(logger)\n        network = builder.create_network(0)\n        parser = trt.OnnxParser(network, logger)\n        if not parser.parse_from_file(str(model_path)):\n            errors = [str(parser.get_error(i)) for i in range(parser.num_errors)]\n            raise RuntimeError('TensorRT ONNX parse failed; unsupported operations: ' + '; '.join(errors))\n        config = builder.create_builder_config()\n        config.set_memory_pool_limit(trt.MemoryPoolType.WORKSPACE, 1024 << 20)\n        config.set_flag(trt.BuilderFlag.FP16)\n        serialized = builder.build_serialized_network(network, config)\n        if serialized is None: raise RuntimeError('TensorRT FP16 build failed; inspect unsupported operations and GPU out-of-memory diagnostics')\n        engine_path.write_bytes(bytes(serialized))\n    runtime = trt.Runtime(logger)\n    engine = runtime.deserialize_cuda_engine(engine_path.read_bytes())\n    if engine is None: raise RuntimeError('TensorRT engine deserialization failed on this GPU/runtime')\n    names = [engine.get_tensor_name(i) for i in range(engine.num_io_tensors)]\n    inputs = [n for n in names if engine.get_tensor_mode(n) == trt.TensorIOMode.INPUT]\n    outputs = [n for n in names if engine.get_tensor_mode(n) == trt.TensorIOMode.OUTPUT]\n    if inputs != ['images'] or set(outputs) != set(expected): raise ValueError('VGGT engine interface mismatch')\n    if tuple(engine.get_tensor_shape('images')) != (1, 3, 518, 1036) or engine.get_tensor_dtype('images') != trt.float32:\n        raise ValueError('TensorRT must expose FP32 [1,3,518,1036] input despite FP16 internal compute')\n    context = engine.create_execution_context()\n    if context is None: raise RuntimeError('TensorRT could not allocate an execution context; check GPU memory')\n    return engine, context\n# Initialize engine/context once per inference branch, not once per atlas.\nengine, context = create_engine()\nstream = torch.cuda.Stream()\nmodel_hash = sha256(model_path)\nweights_hash = sha256(weights_path)\nengine_hash = sha256(engine_path)\ndef process(images):\n    if not torch.cuda.is_available(): raise RuntimeError('TensorRT requires a working NVIDIA CUDA runtime')\n    if images.dtype != np.float32 or images.shape != (1, 3, 518, 1036): raise ValueError('Invalid atlas')\n    try:\n        with torch.cuda.stream(stream):\n            tensors = {'images': torch.from_numpy(np.ascontiguousarray(images)).to('cuda')}\n            for name, shape in expected.items():\n                if tuple(context.get_tensor_shape(name)) != shape: raise ValueError(f'Engine output shape differs: {name}')\n                dtype = engine.get_tensor_dtype(name)\n                if dtype not in (trt.float32, trt.float16): raise ValueError(f'Unsupported output dtype: {name}: {dtype}')\n                tensors[name] = torch.empty(shape, device='cuda', dtype=torch.float32 if dtype == trt.float32 else torch.float16)\n            for name, tensor in tensors.items():\n                if not context.set_tensor_address(name, tensor.data_ptr()): raise RuntimeError(f'TensorRT rejected buffer: {name}')\n            if not context.execute_async_v3(stream_handle=stream.cuda_stream): raise RuntimeError('TensorRT execution failed')\n        stream.synchronize()\n        result = {name: tensors[name].float().cpu().numpy() for name in expected}\n    except (torch.cuda.OutOfMemoryError, MemoryError) as exc:\n        raise RuntimeError('VGGT TensorRT inference ran out of GPU memory on the 4 GB target; no geometry was produced') from exc\n    return {'p04o_pose': result['pose_enc'], 'p04o_depth': result['depth'], 'p04o_conf': result['depth_conf'], 'p04o_runtime': {'backend': 'tensorrt', 'internal_precision': 'fp16', 'io_precision': 'fp32', 'gpu': torch.cuda.get_device_name(), 'model_sha256': model_hash, 'external_weights_sha256': weights_hash, 'engine_sha256': engine_hash}}",
+        "type": "inference"
+      },
+      {
+        "description": "Extract and validate three unparsed VGGT output tensors.",
+        "id": 5,
+        "label_file_path": null,
+        "num_classes": null,
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p05i_pose",
+            "tensor": {
+              "dtype": "fp32",
+              "shape": [
+                1,
+                2,
+                9
+              ]
+            }
+          },
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p05i_depth",
+            "tensor": {
+              "dtype": "fp32",
+              "shape": [
+                1,
+                2,
+                518,
+                518
+              ]
+            }
+          },
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p05i_conf",
+            "tensor": {
+              "dtype": "fp32",
+              "shape": [
+                1,
+                2,
+                518,
+                518
+              ]
+            }
+          },
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p05i_runtime",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          },
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p05i_pair",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p05o_raw",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "import numpy as np\ndef process(pose_enc, depth, depth_conf, runtime, pair):\n    shapes = {'pose_enc': (1, 2, 9), 'depth': (1, 2, 518, 518), 'depth_conf': (1, 2, 518, 518)}\n    checked = {}\n    for name, value in (('pose_enc', pose_enc), ('depth', depth), ('depth_conf', depth_conf)):\n        value = np.asarray(value, dtype=np.float32)\n        if value.shape != shapes[name] or not np.isfinite(value).all():\n            raise ValueError(f'Invalid {name}: expected finite tensor {shapes[name]}, got {value.shape}')\n        checked[name] = value\n    if len(pair['frames']) != 2: raise ValueError('Missing source records for the two views')\n    # No bounding-box parsing, class mapping, NMS, or confidence-as-probability threshold.\n    return {'p05o_raw': {'pose_enc': checked['pose_enc'], 'depth': checked['depth'], 'depth_conf': checked['depth_conf'], 'runtime': runtime, 'pair': pair}}",
+        "task": "custom",
+        "threshold": null,
+        "top_items": null,
+        "type": "postprocess"
+      },
+      {
+        "category": "geometry",
+        "description": "Decode two cameras and unproject depth into world points.",
+        "external_assets": [],
+        "id": 6,
+        "inputs": [
+          "raw_vggt_outputs",
+          "atlas"
+        ],
+        "name": "Decode camera poses and unproject depth",
+        "outputs": [
+          "geometry_predictions"
+        ],
+        "parameters": {
+          "pose_encoding_type": "absT_quaR_FoV",
+          "scale": "arbitrary; uncalibrated",
+          "size": 518,
+          "views": 2
+        },
+        "placement": {
+          "attach_point": null,
+          "position": "post_nn"
+        },
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p06i_raw",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          },
+          {
+            "direction": "input",
+            "format": {
+              "color": "RGB",
+              "encoding": "raw"
+            },
+            "framerate": null,
+            "id": "p06i_atlas",
+            "tensor": {
+              "dtype": "fp32",
+              "shape": [
+                1,
+                3,
+                518,
+                1036
+              ]
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p06o_predictions",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "import numpy as np\n# Inlined contract.decode_outputs, pose_encoding_to_extri_intri,\n# quat_to_mat, and depth unprojection for the declared ndarray ports.\ndef quaternion_to_matrix(q):\n    i, j, k, r = np.moveaxis(q, -1, 0)\n    two_s = 2.0 / np.sum(q * q, axis=-1)\n    entries = (1-two_s*(j*j+k*k), two_s*(i*j-k*r), two_s*(i*k+j*r),\n               two_s*(i*j+k*r), 1-two_s*(i*i+k*k), two_s*(j*k-i*r),\n               two_s*(i*k-j*r), two_s*(j*k+i*r), 1-two_s*(i*i+j*j))\n    return np.stack(entries, axis=-1).reshape(q.shape[:-1] + (3, 3))\ndef process(raw, atlas):\n    pose = raw['pose_enc']\n    depth = raw['depth']\n    conf = raw['depth_conf']\n    if pose.shape != (1, 2, 9) or depth.shape != (1, 2, 518, 518) or conf.shape != (1, 2, 518, 518):\n        raise ValueError('VGGT output shape mismatch')\n    if np.any(np.linalg.norm(pose[..., 3:7], axis=-1) < 1e-8):\n        raise ValueError('VGGT predicted a degenerate camera quaternion')\n    rotation = quaternion_to_matrix(pose[..., 3:7])\n    extrinsic = np.concatenate((rotation, pose[..., :3, None]), axis=-1)[0]\n    fov_h, fov_w = pose[0, :, 7], pose[0, :, 8]\n    fy = (518 / 2.0) / np.tan(fov_h / 2.0)\n    fx = (518 / 2.0) / np.tan(fov_w / 2.0)\n    intrinsic = np.zeros((2, 3, 3), dtype=np.float32)\n    intrinsic[:, 0, 0], intrinsic[:, 1, 1] = fx, fy\n    intrinsic[:, 0, 2] = intrinsic[:, 1, 2] = 518 / 2\n    intrinsic[:, 2, 2] = 1.0\n    if not np.isfinite(extrinsic).all() or not np.isfinite(intrinsic).all():\n        raise ValueError('Invalid camera matrices')\n    # The atlas's left and right halves are precisely the two RGB color views.\n    if atlas.shape != (1, 3, 518, 1036): raise ValueError('Invalid atlas geometry')\n    colors = np.stack(np.split(atlas[0], 2, axis=-1)).transpose(0, 2, 3, 1)\n    u, v = np.meshgrid(np.arange(518), np.arange(518))\n    points = []\n    for s in range(2):\n        z = depth[0, s]\n        K = intrinsic[s]\n        cam = np.stack(((u-K[0, 2])*z/K[0, 0], (v-K[1, 2])*z/K[1, 1], z), axis=-1).astype(np.float32)\n        R, t = extrinsic[s, :, :3], extrinsic[s, :, 3]\n        # Inverse of OpenCV camera_from_world [R|t]: world = R.T @ (cam-t).\n        world = (cam - t) @ R\n        points.append(world)\n    predictions = {'points': np.stack(points), 'colors': colors, 'confidence': conf[0],\n                   'depth': depth[0, ..., None], 'extrinsic': extrinsic, 'intrinsic': intrinsic,\n                   'runtime': raw['runtime'], 'pair': raw['pair'], 'scale': parameters['scale']}\n    return {'p06o_predictions': predictions}",
+        "reference_path": "/home/atharv/spectra/repo/spectra/deployment/contract.py",
+        "runs_every_frame": true,
+        "state_key": "none",
+        "triggers": [],
+        "type": "custom"
+      },
+      {
+        "category": "other",
+        "description": "Filter uncalibrated points and verify each written PLY.",
+        "external_assets": [],
+        "id": 7,
+        "inputs": [
+          "geometry_predictions"
+        ],
+        "name": "Open3D confidence and outlier filtering",
+        "outputs": [
+          "verified_cloud_manifest"
+        ],
+        "parameters": {
+          "confidence_percentile": 50.0,
+          "destination": "/home/atharv/spectra/output/frames",
+          "max_points": 100000,
+          "outlier_neighbors": 20,
+          "outlier_std_ratio": 2.0,
+          "voxel_size": 0.005
+        },
+        "placement": {
+          "attach_point": null,
+          "position": "post_nn"
+        },
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p07i_predictions",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p07o_manifest",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "import hashlib\nfrom pathlib import Path\nimport numpy as np\nimport open3d as o3d\ndef sha256(path):\n    digest = hashlib.sha256()\n    with Path(path).open('rb') as stream:\n        for chunk in iter(lambda: stream.read(8 * 1024 * 1024), b''): digest.update(chunk)\n    return digest.hexdigest()\ndef process(predictions):\n    points = np.asarray(predictions['points']).reshape(-1, 3)\n    colors = np.asarray(predictions['colors']).reshape(-1, 3)\n    confidence = np.asarray(predictions['confidence']).reshape(-1)\n    depth = np.asarray(predictions['depth']).reshape(-1)\n    if not (len(points) == len(colors) == len(confidence) == len(depth)):\n        raise ValueError('Prediction dimensions do not match')\n    valid = (np.isfinite(points).all(axis=1) & np.isfinite(colors).all(axis=1)\n             & np.isfinite(confidence) & np.isfinite(depth) & (depth > 0))\n    if not valid.any(): raise ValueError('VGGT returned no finite positive-depth points')\n    threshold = float(np.percentile(confidence[valid], parameters['confidence_percentile']))\n    valid &= confidence >= threshold\n    indices = np.flatnonzero(valid)\n    if len(indices) > parameters['max_points']:\n        indices = indices[np.linspace(0, len(indices)-1, parameters['max_points'], dtype=int)]\n    cloud = o3d.geometry.PointCloud()\n    cloud.points = o3d.utility.Vector3dVector(points[indices])\n    cloud.colors = o3d.utility.Vector3dVector(np.clip(colors[indices], 0, 1))\n    if parameters['voxel_size'] > 0: cloud = cloud.voxel_down_sample(parameters['voxel_size'])\n    if len(cloud.points) > parameters['outlier_neighbors'] + 1:\n        cloud, _ = cloud.remove_statistical_outlier(parameters['outlier_neighbors'], parameters['outlier_std_ratio'])\n    if not len(cloud.points): raise ValueError('No points survived filtering; use a better overlapping image sequence')\n    destination = Path(parameters['destination'])\n    destination.mkdir(parents=True, exist_ok=True)\n    records = predictions['pair']['frames']\n    ply = destination / f\"cloud_{records[0]['frame_index']:06d}_{records[1]['frame_index']:06d}.ply\"\n    if not o3d.io.write_point_cloud(str(ply), cloud, write_ascii=False): raise RuntimeError('Open3D failed to write PLY')\n    check = o3d.io.read_point_cloud(str(ply))\n    if len(check.points) != len(cloud.points) or not np.isfinite(np.asarray(check.points)).all():\n        raise RuntimeError('PLY round-trip verification failed')\n    manifest = {'pair_id': predictions['pair']['pair_id'], 'frames': records, 'ply': str(ply),\n                'point_count': len(cloud.points), 'input_point_count': len(points),\n                'confidence_threshold': threshold, 'scale': 'arbitrary; uncalibrated',\n                'ply_roundtrip_verified': True,\n                'hashes': {'ply_sha256': sha256(ply), 'model_sha256': predictions['runtime']['model_sha256'],\n                           'external_weights_sha256': predictions['runtime']['external_weights_sha256'],\n                           'engine_sha256': predictions['runtime']['engine_sha256']}}\n    return {'p07o_manifest': manifest}",
+        "reference_path": null,
+        "runs_every_frame": true,
+        "state_key": "none",
+        "triggers": [],
+        "type": "custom"
+      },
+      {
+        "category": "other",
+        "description": "Emit actionable geometry events only after verified reconstruction.",
+        "external_assets": [],
+        "id": 8,
+        "inputs": [
+          "verified_cloud_manifest"
+        ],
+        "name": "geometry_ready event",
+        "outputs": [
+          "json_event"
+        ],
+        "parameters": {
+          "action": "inspect_reconstruction",
+          "event": "geometry_ready",
+          "fields": [
+            "point count",
+            "PLY path",
+            "hashes"
+          ],
+          "method": "Emit a geometry_ready event when the reconstruction is ready"
+        },
+        "placement": {
+          "attach_point": null,
+          "position": "post_nn"
+        },
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p08i_manifest",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p08o_event",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "from pathlib import Path\ndef process(manifest):\n    if not manifest['ply_roundtrip_verified'] or not Path(manifest['ply']).is_file():\n        raise RuntimeError('Cannot announce geometry before verified PLY exists')\n    event = {'schema_version': 1, 'event': parameters['event'], 'action': parameters['action'],\n             'pair_id': manifest['pair_id'], 'frames': manifest['frames'],\n             'point_count': manifest['point_count'], 'ply': manifest['ply'],\n             'hashes': manifest['hashes'], 'scale': manifest['scale']}\n    return {'p08o_event': event}",
+        "reference_path": null,
+        "runs_every_frame": false,
+        "state_key": "none",
+        "triggers": [
+          "on_verified_reconstruction"
+        ],
+        "type": "custom"
+      },
+      {
+        "description": "Save verified geometry events as a JSON array.",
+        "grid": null,
+        "id": 9,
+        "name": "json",
+        "output_type": "single",
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p09i_event",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "import json\nfrom pathlib import Path\npath = Path('/home/atharv/spectra/output/events.json')\ndef process(event):\n    path.parent.mkdir(parents=True, exist_ok=True)\n    if path.is_file():\n        events = json.loads(path.read_text(encoding='utf-8'))\n        if not isinstance(events, list): raise ValueError('Existing events.json must contain an array')\n    else:\n        events = []\n    events.append(event)\n    temporary = path.with_name(path.name + '.tmp')\n    temporary.write_text(json.dumps(events, indent=2, allow_nan=False), encoding='utf-8')\n    temporary.replace(path)",
+        "resolution": null,
+        "type": "output",
+        "url": "file:///home/atharv/spectra/output/events.json"
+      },
+      {
+        "description": "Save every original-size frame alongside verified point clouds.",
+        "grid": null,
+        "id": 10,
+        "name": "file",
+        "output_type": "single",
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": "BGR",
+              "encoding": "raw"
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 4
+            },
+            "id": "p10i_frame",
+            "tensor": {
+              "dtype": "uint8",
+              "shape": [
+                520,
+                778,
+                3
+              ]
+            }
+          },
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": null,
+            "id": "p10i_manifest",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "from pathlib import Path\nimport cv2\ndestination = Path('/home/atharv/spectra/output/frames')\n# Independent port events: an image arrives for every decoded frame;\n# a manifest arrives only after a complete reconstruction.\nframe_number = 0\ndef on_frame(frame):\n    global frame_number\n    destination.mkdir(parents=True, exist_ok=True)\n    path = destination / f'{frame_number:06d}.png'\n    if not cv2.imwrite(str(path), frame): raise RuntimeError(f'Failed to save frame: {path}')\n    frame_number += 1\ndef on_manifest(manifest):\n    ply = Path(manifest['ply'])\n    if ply.parent != destination or not ply.is_file() or not manifest['ply_roundtrip_verified']:\n        raise RuntimeError('Verified PLY is missing from the requested saved-images destination')",
+        "resolution": [
+          778,
+          520
+        ],
+        "type": "output",
+        "url": "file:///home/atharv/spectra/output/frames"
+      }
+    ]
+  }
+}

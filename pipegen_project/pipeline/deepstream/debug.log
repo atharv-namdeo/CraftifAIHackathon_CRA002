@@ -1,0 +1,96 @@
+
+==============================================================================
+[2026-10-17T20:47:03+00:00] compile FAILED (attempt 1/4)
+------------------------------------------------------------------------------
+make: Entering directory '/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/pipeline/deepstream/parsers'
+mkdir -p ../build
+rm -f ../build/libvggt_render_process.so
+g++ -fPIC -O2 -std=c++17 -I /opt/nvidia/deepstream/deepstream-7.1/sources/includes -I /usr/local/include -pthread -I/usr/include/gstreamer-1.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/opencv4 -o ../build/libvggt_render_process.so vggt_render_process.cpp -shared -Wl,--no-undefined -L /opt/nvidia/deepstream/deepstream-7.1/lib -lnvds_meta -Wl,-rpath,/opt/nvidia/deepstream/deepstream-7.1/lib -lgstreamer-1.0 -lgobject-2.0 -lglib-2.0 -lopencv_stitching -lopencv_alphamat -lopencv_aruco -lopencv_barcode -lopencv_bgsegm -lopencv_bioinspired -lopencv_ccalib -lopencv_dnn_objdetect -lopencv_dnn_superres -lopencv_dpm -lopencv_face -lopencv_freetype -lopencv_fuzzy -lopencv_hdf -lopencv_hfs -lopencv_img_hash -lopencv_intensity_transform -lopencv_line_descriptor -lopencv_mcc -lopencv_quality -lopencv_rapid -lopencv_reg -lopencv_rgbd -lopencv_saliency -lopencv_shape -lopencv_stereo -lopencv_structured_light -lopencv_phase_unwrapping -lopencv_superres -lopencv_optflow -lopencv_surface_matching -lopencv_tracking -lopencv_highgui -lopencv_datasets -lopencv_text -lopencv_plot -lopencv_ml -lopencv_videostab -lopencv_videoio -lopencv_viz -lopencv_wechat_qrcode -lopencv_ximgproc -lopencv_video -lopencv_xobjdetect -lopencv_objdetect -lopencv_calib3d -lopencv_imgcodecs -lopencv_features2d -lopencv_dnn -lopencv_flann -lopencv_xphoto -lopencv_photo -lopencv_imgproc -lopencv_core
+make: Leaving directory '/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/pipeline/deepstream/parsers'
+In file included from /usr/include/x86_64-linux-gnu/NvInferLegacyDims.h:22,
+                 from /usr/include/x86_64-linux-gnu/NvInfer.h:21,
+                 from /tmp/tmp.Q9CrmDdoq5/vggt_render_process.cpp:28:
+/usr/include/x86_64-linux-gnu/NvInferRuntimeBase.h:24:10: fatal error: cuda_runtime_api.h: No such file or directory
+   24 | #include <cuda_runtime_api.h>
+      |          ^~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make: *** [Makefile:71: ../build/libvggt_render_process.so] Error 1
+
+==============================================================================
+[2026-10-17T20:47:03+00:00] repair route (attempt 1/4)
+------------------------------------------------------------------------------
+re-invoking worker 'custom' for job 'vggt_render'
+
+==============================================================================
+[2026-10-17T20:50:36+00:00] compile FAILED (attempt 2/4)
+------------------------------------------------------------------------------
+make: Entering directory '/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/pipeline/deepstream/parsers'
+mkdir -p ../build
+rm -f ../build/libvggt_render_process.so
+g++ -fPIC -O2 -std=c++17 -I /opt/nvidia/deepstream/deepstream-7.1/sources/includes -I /usr/local/include -pthread -I/usr/include/gstreamer-1.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/opencv4 -o ../build/libvggt_render_process.so vggt_render_process.cpp -shared -Wl,--no-undefined -L /opt/nvidia/deepstream/deepstream-7.1/lib -lnvds_meta -Wl,-rpath,/opt/nvidia/deepstream/deepstream-7.1/lib -lgstreamer-1.0 -lgobject-2.0 -lglib-2.0 -lopencv_stitching -lopencv_alphamat -lopencv_aruco -lopencv_barcode -lopencv_bgsegm -lopencv_bioinspired -lopencv_ccalib -lopencv_dnn_objdetect -lopencv_dnn_superres -lopencv_dpm -lopencv_face -lopencv_freetype -lopencv_fuzzy -lopencv_hdf -lopencv_hfs -lopencv_img_hash -lopencv_intensity_transform -lopencv_line_descriptor -lopencv_mcc -lopencv_quality -lopencv_rapid -lopencv_reg -lopencv_rgbd -lopencv_saliency -lopencv_shape -lopencv_stereo -lopencv_structured_light -lopencv_phase_unwrapping -lopencv_superres -lopencv_optflow -lopencv_surface_matching -lopencv_tracking -lopencv_highgui -lopencv_datasets -lopencv_text -lopencv_plot -lopencv_ml -lopencv_videostab -lopencv_videoio -lopencv_viz -lopencv_wechat_qrcode -lopencv_ximgproc -lopencv_video -lopencv_xobjdetect -lopencv_objdetect -lopencv_calib3d -lopencv_imgcodecs -lopencv_features2d -lopencv_dnn -lopencv_flann -lopencv_xphoto -lopencv_photo -lopencv_imgproc -lopencv_core
+make: Leaving directory '/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/pipeline/deepstream/parsers'
+/tmp/tmp.HRjfZBG9G0/vggt_render_process.cpp: In function ‘void do_geometry_and_output(const std::vector<float>&, const std::vector<float>&, const std::vector<float>&, const std::vector<float>&, int, const FrameRecord&, const FrameRecord&, NvDsCustomPostProcessFrameInCpu*)’:
+/tmp/tmp.HRjfZBG9G0/vggt_render_process.cpp:731:23: error: cannot convert ‘std::string’ {aka ‘std::__cxx11::basic_string<char>’} to ‘const char*’
+  731 |     sb.field_s("ply", ply_path);
+      |                       ^~~~~~~~
+      |                       |
+      |                       std::string {aka std::__cxx11::basic_string<char>}
+In file included from /tmp/tmp.HRjfZBG9G0/vggt_render_process.cpp:28:
+/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/pipeline/deepstream/parsers/render_meta.h:886:47: note:   initializing argument 2 of ‘bool render_meta::Builder::field_s(const char*, const char*)’
+  886 |     bool field_s(const char* key, const char* v) {
+      |                                   ~~~~~~~~~~~~^
+/tmp/tmp.HRjfZBG9G0/vggt_render_process.cpp:733:30: error: cannot convert ‘std::string’ {aka ‘std::__cxx11::basic_string<char>’} to ‘const char*’
+  733 |     sb.field_s("ply_sha256", ply_sha);
+      |                              ^~~~~~~
+      |                              |
+      |                              std::string {aka std::__cxx11::basic_string<char>}
+In file included from /tmp/tmp.HRjfZBG9G0/vggt_render_process.cpp:28:
+/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/pipeline/deepstream/parsers/render_meta.h:886:47: note:   initializing argument 2 of ‘bool render_meta::Builder::field_s(const char*, const char*)’
+  886 |     bool field_s(const char* key, const char* v) {
+      |                                   ~~~~~~~~~~~~^
+/tmp/tmp.HRjfZBG9G0/vggt_render_process.cpp:734:33: error: cannot convert ‘std::string’ {aka ‘std::__cxx11::basic_string<char>’} to ‘const char*’
+  734 |     sb.field_s("engine_sha256", engine_sha);
+      |                                 ^~~~~~~~~~
+      |                                 |
+      |                                 std::string {aka std::__cxx11::basic_string<char>}
+In file included from /tmp/tmp.HRjfZBG9G0/vggt_render_process.cpp:28:
+/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/pipeline/deepstream/parsers/render_meta.h:886:47: note:   initializing argument 2 of ‘bool render_meta::Builder::field_s(const char*, const char*)’
+  886 |     bool field_s(const char* key, const char* v) {
+      |                                   ~~~~~~~~~~~~^
+/tmp/tmp.HRjfZBG9G0/vggt_render_process.cpp:735:32: error: cannot convert ‘std::string’ {aka ‘std::__cxx11::basic_string<char>’} to ‘const char*’
+  735 |     sb.field_s("model_sha256", model_sha);
+      |                                ^~~~~~~~~
+      |                                |
+      |                                std::string {aka std::__cxx11::basic_string<char>}
+In file included from /tmp/tmp.HRjfZBG9G0/vggt_render_process.cpp:28:
+/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/pipeline/deepstream/parsers/render_meta.h:886:47: note:   initializing argument 2 of ‘bool render_meta::Builder::field_s(const char*, const char*)’
+  886 |     bool field_s(const char* key, const char* v) {
+      |                                   ~~~~~~~~~~~~^
+/tmp/tmp.HRjfZBG9G0/vggt_render_process.cpp:736:43: error: cannot convert ‘std::string’ {aka ‘std::__cxx11::basic_string<char>’} to ‘const char*’
+  736 |     sb.field_s("external_weights_sha256", weights_sha);
+      |                                           ^~~~~~~~~~~
+      |                                           |
+      |                                           std::string {aka std::__cxx11::basic_string<char>}
+In file included from /tmp/tmp.HRjfZBG9G0/vggt_render_process.cpp:28:
+/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/pipeline/deepstream/parsers/render_meta.h:886:47: note:   initializing argument 2 of ‘bool render_meta::Builder::field_s(const char*, const char*)’
+  886 |     bool field_s(const char* key, const char* v) {
+      |                                   ~~~~~~~~~~~~^
+/tmp/tmp.HRjfZBG9G0/vggt_render_process.cpp: In function ‘void mkdirs(const string&)’:
+/tmp/tmp.HRjfZBG9G0/vggt_render_process.cpp:102:17: warning: ignoring return value of ‘int system(const char*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  102 |     (void)system(cmd.c_str());
+      |           ~~~~~~^~~~~~~~~~~~~
+make: *** [Makefile:71: ../build/libvggt_render_process.so] Error 1
+
+==============================================================================
+[2026-10-17T20:50:36+00:00] repair route (attempt 2/4)
+------------------------------------------------------------------------------
+re-invoking worker 'custom' for job 'vggt_render'
+
+==============================================================================
+[2026-10-17T20:55:35+00:00] run.debug.sh FAILED (attempt 3/4)
+------------------------------------------------------------------------------
+pipeline never reached PLAYING (preroll/negotiation failure, or a blocking call before PLAYING):
+…treamer-1.0/libgstmpeg2enc.so': libmjpegutils-2.1.so.0: cannot open shared object file: No such file or directory
+(gst-plugin-scanner:991): GStreamer-WARNING **: 20:55:31.706: Failed to load plugin '/usr/lib/x86_64-linux-gnu/gstreamer-1.0/deepstream/libnvdsgst_udp.so': librivermax.so.1: cannot open shared object file: No such file or directory
+(gst-plugin-scanner:991): GStreamer-WARNING **: 20:55:31.940: Failed to load plugin '/usr/lib/x86_64-linux-gnu/gstreamer-1.0/libgstmplex.so': libmjpegutils-2.1.so.0: cannot open shared object file: No such file or directory
+Setting pipeline to PAUSED ...
