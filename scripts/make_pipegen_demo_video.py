@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import cv2
 import numpy as np
-from make_demo_video import W, H, FPS, ACCENT, MUTED, FG, canvas, text, fit, paste, hold
+from make_demo_video import W, H, FPS, ACCENT, MUTED, FG, canvas, text, fit, paste, hold, colorize
 
 GREEN = (170, 230, 170)
 WARN = (80, 170, 255)
@@ -99,6 +99,8 @@ def main():
     parser.add_argument('--evidence', type=Path, default=Path('deliverables/evidence'))
     parser.add_argument('--video', type=Path, required=True)
     parser.add_argument('--reference', type=Path, required=True, help='CPU ONNX reference metadata.json')
+    parser.add_argument('--reference-run', type=Path, help='CPU ONNX run dir with predictions.npz (raw-output panel)')
+    parser.add_argument('--viewer', type=Path, nargs='*', default=[], help='Real SPECTRA viewer screenshots of the CPU reference run')
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     ev, pg = args.evidence, args.evidence / 'pipegen'
@@ -182,6 +184,29 @@ def main():
         tile = fit(image, W - 80, H - 160)
         paste(img, tile, (W - tile.shape[1]) // 2, 105)
         hold(writer, img, 1.2)
+
+    # 5b. Raw VGGT outputs. The DeepStream run keeps only rendered depth, so the full
+    # depth + confidence panel comes from the CPU ONNX reference run on the same frames 0 + 4.
+    if args.reference_run:
+        pred = np.load(args.reference_run / 'predictions.npz')
+        img = canvas()
+        header(img, 'VGGT raw outputs: depth and confidence per view',
+               'Reference run on the same frames 0 + 4: ONNX Runtime CPU (FP32), validated export')
+        for i in range(2):
+            d, conf = pred['depth'][i, ..., 0], pred['confidence'][i]
+            paste(img, cv2.resize(colorize(d), (280, 280)), 40 + i * 620, 130)
+            cm = cv2.applyColorMap((255 * np.clip(conf / np.percentile(conf, 99), 0, 1)).astype(np.uint8), cv2.COLORMAP_VIRIDIS)
+            paste(img, cv2.resize(cm, (280, 280)), 330 + i * 620, 130)
+            text(img, f'view {i} depth  {d.min():.2f}-{d.max():.2f}', (40 + i * 620, 440), 0.5, FG)
+            text(img, f'confidence {conf.min():.1f}-{conf.max():.1f}', (330 + i * 620, 440), 0.5, FG)
+        for i, (rc_, dc_) in enumerate(zip(ref['cameras'], meta['cameras'])):
+            a, b = rc_['center'], dc_['center']
+            text(img, f'camera {i} center  CPU ({a[0]:+.3f}, {a[1]:+.3f}, {a[2]:+.3f})   '
+                      f'DeepStream FP16 ({b[0]:+.3f}, {b[1]:+.3f}, {b[2]:+.3f})', (40, 520 + 34 * i), 0.58, ACCENT)
+        text(img, 'Outputs: pose_enc [1,2,9], depth [1,2,518,518], depth_conf [1,2,518,518]; scale arbitrary', (40, 600), 0.52, MUTED)
+        hold(writer, img, 9)
+    for path in args.viewer:
+        shot(writer, path, 'SPECTRA viewer (Flask + Three.js)', f'{path.name} - CPU reference run, same frames 0 + 4', 5)
 
     # 6. Point cloud
     seconds = 16
