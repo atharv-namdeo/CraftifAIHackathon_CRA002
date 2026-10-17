@@ -1,0 +1,3 @@
+﻿Downloading: Ubuntu 22.04 LTS
+Installing: Ubuntu 22.04 LTS
+Distribution successfully installed. It can be launched via 'wsl.exe -d Ubuntu-22.04'

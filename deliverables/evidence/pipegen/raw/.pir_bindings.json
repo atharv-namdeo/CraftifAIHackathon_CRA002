@@ -1,0 +1,21 @@
+{
+  "graph_sha256": "e006a62483817d5087441937b850339087c23b9d6a2db3989f86c5cfa32b809d",
+  "bindings": {
+    "inputs": [],
+    "outputs": [],
+    "tasks": [
+      {
+        "node_ids": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "task_id": "3D geometric mapping@input1"
+      }
+    ]
+  }
+}

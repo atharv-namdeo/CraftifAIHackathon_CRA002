@@ -1,0 +1,46 @@
+== start 2026-10-18T02:55:07+05:30
+make: Entering directory '/home/atharv/spectra/repo/deepstream/parsers'
+make: Nothing to be done for 'all'.
+make: Leaving directory '/home/atharv/spectra/repo/deepstream/parsers'
+Setting pipeline to PAUSED ...
+0:00:09.253427597 [31m 2268[00m 0x5871493ac870 [36mINFO   [00m [00m    nvinfer_backport gstnvinfer.cpp:684:gst_nvinfer_backport_logger:<nvinferbackport0>[00m NvDsInferContext[UID 1]: Info from NvDsInferContextImpl::deserializeEngineAndBackend() <nvdsinfer_context_impl.cpp:2161> [UID = 1]: deserialized trt engine from :/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/model_stage/vggt.fp16.plan
+0:00:09.253537317 [31m 2268[00m 0x5871493ac870 [36mINFO   [00m [00m    nvinfer_backport gstnvinfer.cpp:684:gst_nvinfer_backport_logger:<nvinferbackport0>[00m NvDsInferContext[UID 1]: Info from NvDsInferContextImpl::generateBackendContext() <nvdsinfer_context_impl.cpp:2264> [UID = 1]: Use deserialized engine model: /home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/model_stage/vggt.fp16.plan
+0:00:09.305450656 [31m 2268[00m 0x5871493ac870 [36mINFO   [00m [00m    nvinfer_backport gstnvinfer_impl.cpp:343:notifyLoadModelStatus:<nvinferbackport0>[00m [UID 1]: Load new model:/home/atharv/spectra/repo/deepstream/configs/config_vggt.txt sucessfully
+Implicit layer support has been deprecated
+INFO: [Implicit Engine Info]: layers num: 0
+
+Pipeline is PREROLLING ...
+Failed to query video capabilities: Inappropriate ioctl for device
+WARNING: from element /GstPipeline:pipeline0/GstNvStreamMux:mux: Rounding muxer output width to the next multiple of 8: 1040
+Additional debug info:
+gstnvstreammux.cpp(599): gst_nvstreammux_chain (): /GstPipeline:pipeline0/GstNvStreamMux:mux
+WARNING: from element /GstPipeline:pipeline0/GstNvStreamMux:mux: Rounding muxer output height to the next multiple of 4: 520
+Additional debug info:
+gstnvstreammux.cpp(607): gst_nvstreammux_chain (): /GstPipeline:pipeline0/GstNvStreamMux:mux
+[vggt] out=/home/atharv/spectra/output stride=4 frames (1.00s at 4.00 fps)
+[vggt] frame 0: warm-up (single view), 27.233s
+[meta_json] file -> /home/atharv/spectra/output/events.json
+Pipeline is PREROLLED ...
+Setting pipeline to PLAYING ...
+[vggt] frame 1: warm-up (single view), 27.163s
+Redistribute latency...
+New clock: GstSystemClock
+Redistribute latency...
+[vggt] frame 2: warm-up (single view), 27.053s
+[vggt] frame 3: warm-up (single view), 27.027s
+nvstreammux: Successfully handled EOS for source_id=0
+[vggt] frame 4: pair (0,4) -> 50494 points (conf>=2.3086), 27.021s -> /home/atharv/spectra/output/pairs/pair_0000_0004.ply
+[vggt] frame 5: pair (1,5) -> 51976 points (conf>=1.0254), 26.927s -> /home/atharv/spectra/output/pairs/pair_0001_0005.ply
+[vggt] frame 6: pair (2,6) -> 72551 points (conf>=1.0000), 27.030s -> /home/atharv/spectra/output/pairs/pair_0002_0006.ply
+[vggt] frame 7: pair (3,7) -> 41720 points (conf>=3.7832), 27.139s -> /home/atharv/spectra/output/pairs/pair_0003_0007.ply
+Got EOS from element "pipeline0".
+EOS received - stopping pipeline...
+Execution ended after 0:02:46.380325924
+Setting pipeline to NULL ...
+Freeing pipeline ...
+[meta_json] 8 frames, 0 objects
+
+real	3m33.763s
+user	2m20.395s
+sys	3m35.852s
+== exit 0 2026-10-18T02:58:42+05:30

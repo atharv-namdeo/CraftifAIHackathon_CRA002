@@ -1,0 +1,12 @@
+﻿fetching config.json
+.\.venv\Scripts\python.exe : Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to 
+enable higher rate limits and faster downloads.
+At line:1 char:423
++ ... _WARNING=1; .\.venv\Scripts\python.exe scripts\fetch_checkpoint.py *> ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Warning: You ar...ster downloads.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+fetching model.safetensors
+size 5026367224 sha256 f164acf60724910d8fe1578bb499d800850c7bb0948db7555c413f9fbe60467e
+CHECKPOINT VERIFIED C:\Users\Atharv\spectra-vggt\artifacts\checkpoints\VGGT-1B

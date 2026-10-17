@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "steps": {
+    "visualize": {
+      "step": "visualize",
+      "status": "ok",
+      "summary": "5167 graph nodes \u00b7 57 unresolved TensorRT node(s)",
+      "detail": "",
+      "data": {
+        "_data_file": "/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/model_stage/visualize.data.json"
+      },
+      "warnings": [],
+      "artifacts": {},
+      "recorded_at": 1792257659.486956
+    }
+  },
+  "constraint": {},
+  "choices": {}
+}

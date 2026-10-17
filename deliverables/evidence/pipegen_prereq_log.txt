@@ -1,0 +1,404 @@
+﻿==== Setup Started: Sat Oct 17 17:57:18 IST 2026 ====
+==== PipeGen Pre-requisite setup====
+Based on official documentation as of: 22 June 2026
+
+This script will install the following components:
+  1. Docker
+  2. NVIDIA Container Toolkit
+  3. socat
+
+
+Detected OS: Ubuntu 22.04 (Supported)
+
+Running pre-flight checks...
+  -> Checking available disk space...
+     Disk: 955 GB free (OK)
+  -> Checking for apt/dpkg locks...
+     apt/dpkg: free
+Pre-flight checks passed.
+
+[1/5] Installing Docker...
+Get:1 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+Hit:2 http://archive.ubuntu.com/ubuntu jammy InRelease
+Get:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
+Get:4 http://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [3642 kB]
+Get:5 http://archive.ubuntu.com/ubuntu jammy-backports InRelease [127 kB]
+Get:6 http://archive.ubuntu.com/ubuntu jammy/universe amd64 Packages [14.1 MB]
+Get:7 http://security.ubuntu.com/ubuntu jammy-security/main Translation-en [509 kB]
+Get:8 http://security.ubuntu.com/ubuntu jammy-security/main amd64 c-n-f Metadata [14.7 kB]
+Get:9 http://security.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [6505 kB]
+Get:10 http://security.ubuntu.com/ubuntu jammy-security/restricted Translation-en [1250 kB]
+Get:11 http://security.ubuntu.com/ubuntu jammy-security/restricted amd64 c-n-f Metadata [600 B]
+Get:12 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [1054 kB]
+Get:13 http://security.ubuntu.com/ubuntu jammy-security/universe Translation-en [237 kB]
+Get:14 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 c-n-f Metadata [23.2 kB]
+Get:15 http://security.ubuntu.com/ubuntu jammy-security/multiverse amd64 Packages [79.6 kB]
+Get:16 http://security.ubuntu.com/ubuntu jammy-security/multiverse Translation-en [13.7 kB]
+Get:17 http://security.ubuntu.com/ubuntu jammy-security/multiverse amd64 c-n-f Metadata [544 B]
+Get:18 http://archive.ubuntu.com/ubuntu jammy/universe Translation-en [5652 kB]
+Get:19 http://archive.ubuntu.com/ubuntu jammy/universe amd64 c-n-f Metadata [286 kB]
+Get:20 http://archive.ubuntu.com/ubuntu jammy/multiverse amd64 Packages [217 kB]
+Get:21 http://archive.ubuntu.com/ubuntu jammy/multiverse Translation-en [112 kB]
+Get:22 http://archive.ubuntu.com/ubuntu jammy/multiverse amd64 c-n-f Metadata [8372 B]
+Get:23 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [3908 kB]
+Get:24 http://archive.ubuntu.com/ubuntu jammy-updates/main Translation-en [576 kB]
+Get:25 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 c-n-f Metadata [20.1 kB]
+Get:26 http://archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [6740 kB]
+Get:27 http://archive.ubuntu.com/ubuntu jammy-updates/restricted Translation-en [1294 kB]
+Get:28 http://archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 c-n-f Metadata [584 B]
+Get:29 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1289 kB]
+Get:30 http://archive.ubuntu.com/ubuntu jammy-updates/universe Translation-en [326 kB]
+Get:31 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 c-n-f Metadata [30.8 kB]
+Get:32 http://archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 Packages [86.1 kB]
+Get:33 http://archive.ubuntu.com/ubuntu jammy-updates/multiverse Translation-en [16.6 kB]
+Get:34 http://archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 c-n-f Metadata [756 B]
+Get:35 http://archive.ubuntu.com/ubuntu jammy-backports/main amd64 Packages [70.2 kB]
+Get:36 http://archive.ubuntu.com/ubuntu jammy-backports/main Translation-en [11.4 kB]
+Get:37 http://archive.ubuntu.com/ubuntu jammy-backports/main amd64 c-n-f Metadata [412 B]
+Get:38 http://archive.ubuntu.com/ubuntu jammy-backports/restricted amd64 c-n-f Metadata [116 B]
+Get:39 http://archive.ubuntu.com/ubuntu jammy-backports/universe amd64 Packages [30.8 kB]
+Get:40 http://archive.ubuntu.com/ubuntu jammy-backports/universe Translation-en [16.9 kB]
+Get:41 http://archive.ubuntu.com/ubuntu jammy-backports/universe amd64 c-n-f Metadata [676 B]
+Get:42 http://archive.ubuntu.com/ubuntu jammy-backports/multiverse amd64 c-n-f Metadata [116 B]
+Fetched 48.5 MB in 59s (828 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+gnupg is already the newest version (2.2.27-3ubuntu2.5).
+gnupg set to manually installed.
+The following packages will be upgraded:
+  ca-certificates curl libcurl4
+3 upgraded, 0 newly installed, 0 to remove and 153 not upgraded.
+Need to get 628 kB of archives.
+After this operation, 51.2 kB disk space will be freed.
+Get:1 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 ca-certificates all 20260601~22.04.1 [141 kB]
+Get:2 http://security.ubuntu.com/ubuntu jammy-security/main amd64 curl amd64 7.81.0-1ubuntu1.30 [194 kB]
+Get:3 http://security.ubuntu.com/ubuntu jammy-security/main amd64 libcurl4 amd64 7.81.0-1ubuntu1.30 [293 kB]
+Preconfiguring packages ...
+Fetched 628 kB in 4s (165 kB/s)
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 42622 files and directories currently installed.)
+Preparing to unpack .../ca-certificates_20260601~22.04.1_all.deb ...
+Unpacking ca-certificates (20260601~22.04.1) over (20240203~22.04.1) ...
+Preparing to unpack .../curl_7.81.0-1ubuntu1.30_amd64.deb ...
+Unpacking curl (7.81.0-1ubuntu1.30) over (7.81.0-1ubuntu1.22) ...
+Preparing to unpack .../libcurl4_7.81.0-1ubuntu1.30_amd64.deb ...
+Unpacking libcurl4:amd64 (7.81.0-1ubuntu1.30) over (7.81.0-1ubuntu1.22) ...
+Setting up ca-certificates (20260601~22.04.1) ...
+Updating certificates in /etc/ssl/certs...
+rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+14 added, 39 removed; done.
+Setting up libcurl4:amd64 (7.81.0-1ubuntu1.30) ...
+Setting up curl (7.81.0-1ubuntu1.30) ...
+Processing triggers for man-db (2.10.2-1) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.13) ...
+Processing triggers for ca-certificates (20260601~22.04.1) ...
+Updating certificates in /etc/ssl/certs...
+0 added, 0 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+Get:1 https://download.docker.com/linux/ubuntu jammy InRelease [48.5 kB]
+Hit:2 http://archive.ubuntu.com/ubuntu jammy InRelease
+Hit:3 http://security.ubuntu.com/ubuntu jammy-security InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+Get:5 https://download.docker.com/linux/ubuntu jammy/stable amd64 Packages [90.4 kB]
+Hit:6 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+Fetched 139 kB in 1s (116 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  dbus-user-session docker-ce-rootless-extras pigz
+Suggested packages:
+  cgroupfs-mount | cgroup-lite docker-model-plugin
+The following NEW packages will be installed:
+  containerd.io dbus-user-session docker-buildx-plugin docker-ce docker-ce-cli
+  docker-ce-rootless-extras docker-compose-plugin pigz
+0 upgraded, 8 newly installed, 0 to remove and 153 not upgraded.
+Need to get 102 MB of archives.
+After this operation, 388 MB of additional disk space will be used.
+Get:1 https://download.docker.com/linux/ubuntu jammy/stable amd64 containerd.io amd64 2.4.2-2~ubuntu.22.04~jammy [23.3 MB]
+Get:2 http://archive.ubuntu.com/ubuntu jammy/universe amd64 pigz amd64 2.6-1 [63.6 kB]
+Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 dbus-user-session amd64 1.12.20-2ubuntu4.1 [9442 B]
+Get:4 https://download.docker.com/linux/ubuntu jammy/stable amd64 docker-ce-cli amd64 5:29.9.1-1~ubuntu.22.04~jammy [17.6 MB]
+Get:5 https://download.docker.com/linux/ubuntu jammy/stable amd64 docker-ce amd64 5:29.9.1-1~ubuntu.22.04~jammy [24.6 MB]
+Get:6 https://download.docker.com/linux/ubuntu jammy/stable amd64 docker-buildx-plugin amd64 0.38.0-1~ubuntu.22.04~jammy [17.8 MB]
+Get:7 https://download.docker.com/linux/ubuntu jammy/stable amd64 docker-ce-rootless-extras amd64 5:29.9.1-1~ubuntu.22.04~jammy [10.2 MB]
+Get:8 https://download.docker.com/linux/ubuntu jammy/stable amd64 docker-compose-plugin amd64 5.6.0-1~ubuntu.22.04~jammy [8081 kB]
+Fetched 102 MB in 2min 20s (727 kB/s)
+Selecting previously unselected package containerd.io.
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 42597 files and directories currently installed.)
+Preparing to unpack .../0-containerd.io_2.4.2-2~ubuntu.22.04~jammy_amd64.deb ...
+Unpacking containerd.io (2.4.2-2~ubuntu.22.04~jammy) ...
+Selecting previously unselected package docker-ce-cli.
+Preparing to unpack .../1-docker-ce-cli_5%3a29.9.1-1~ubuntu.22.04~jammy_amd64.deb ...
+Unpacking docker-ce-cli (5:29.9.1-1~ubuntu.22.04~jammy) ...
+Selecting previously unselected package docker-ce.
+Preparing to unpack .../2-docker-ce_5%3a29.9.1-1~ubuntu.22.04~jammy_amd64.deb ...
+Unpacking docker-ce (5:29.9.1-1~ubuntu.22.04~jammy) ...
+Selecting previously unselected package pigz.
+Preparing to unpack .../3-pigz_2.6-1_amd64.deb ...
+Unpacking pigz (2.6-1) ...
+Selecting previously unselected package dbus-user-session.
+Preparing to unpack .../4-dbus-user-session_1.12.20-2ubuntu4.1_amd64.deb ...
+Unpacking dbus-user-session (1.12.20-2ubuntu4.1) ...
+Selecting previously unselected package docker-buildx-plugin.
+Preparing to unpack .../5-docker-buildx-plugin_0.38.0-1~ubuntu.22.04~jammy_amd64.deb ...
+Unpacking docker-buildx-plugin (0.38.0-1~ubuntu.22.04~jammy) ...
+Selecting previously unselected package docker-ce-rootless-extras.
+Preparing to unpack .../6-docker-ce-rootless-extras_5%3a29.9.1-1~ubuntu.22.04~jammy_amd64.deb ...
+Unpacking docker-ce-rootless-extras (5:29.9.1-1~ubuntu.22.04~jammy) ...
+Selecting previously unselected package docker-compose-plugin.
+Preparing to unpack .../7-docker-compose-plugin_5.6.0-1~ubuntu.22.04~jammy_amd64.deb ...
+Unpacking docker-compose-plugin (5.6.0-1~ubuntu.22.04~jammy) ...
+Setting up dbus-user-session (1.12.20-2ubuntu4.1) ...
+Setting up docker-buildx-plugin (0.38.0-1~ubuntu.22.04~jammy) ...
+Setting up containerd.io (2.4.2-2~ubuntu.22.04~jammy) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/containerd.service → /lib/systemd/system/containerd.service.
+Setting up docker-compose-plugin (5.6.0-1~ubuntu.22.04~jammy) ...
+Setting up docker-ce-cli (5:29.9.1-1~ubuntu.22.04~jammy) ...
+Setting up pigz (2.6-1) ...
+Setting up docker-ce-rootless-extras (5:29.9.1-1~ubuntu.22.04~jammy) ...
+Setting up docker-ce (5:29.9.1-1~ubuntu.22.04~jammy) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/docker.service → /lib/systemd/system/docker.service.
+Created symlink /etc/systemd/system/sockets.target.wants/docker.socket → /lib/systemd/system/docker.socket.
+Processing triggers for man-db (2.10.2-1) ...
+Synchronizing state of docker.service with SysV service script with /lib/systemd/systemd-sysv-install.
+Executing: /lib/systemd/systemd-sysv-install enable docker
+ Docker installed successfully
+[2/5] Installing NVIDIA Container Toolkit...
+Hit:1 https://download.docker.com/linux/ubuntu jammy InRelease
+Hit:2 http://archive.ubuntu.com/ubuntu jammy InRelease
+Hit:3 http://security.ubuntu.com/ubuntu jammy-security InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+Hit:5 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+ca-certificates is already the newest version (20260601~22.04.1).
+ca-certificates set to manually installed.
+curl is already the newest version (7.81.0-1ubuntu1.30).
+curl set to manually installed.
+The following NEW packages will be installed:
+  gnupg2
+0 upgraded, 1 newly installed, 0 to remove and 153 not upgraded.
+Need to get 5544 B of archives.
+After this operation, 52.2 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 gnupg2 all 2.2.27-3ubuntu2.5 [5544 B]
+Fetched 5544 B in 1s (9359 B/s)
+Selecting previously unselected package gnupg2.
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 42846 files and directories currently installed.)
+Preparing to unpack .../gnupg2_2.2.27-3ubuntu2.5_all.deb ...
+Unpacking gnupg2 (2.2.27-3ubuntu2.5) ...
+Setting up gnupg2 (2.2.27-3ubuntu2.5) ...
+Processing triggers for man-db (2.10.2-1) ...
+deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://nvidia.github.io/libnvidia-container/stable/deb/$(ARCH) /
+#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://nvidia.github.io/libnvidia-container/experimental/deb/$(ARCH) /
+Get:1 https://nvidia.github.io/libnvidia-container/stable/deb/amd64  InRelease [1477 B]
+Hit:2 https://download.docker.com/linux/ubuntu jammy InRelease
+Get:3 https://nvidia.github.io/libnvidia-container/experimental/deb/amd64  InRelease [1489 B]
+Hit:4 http://archive.ubuntu.com/ubuntu jammy InRelease
+Get:5 https://nvidia.github.io/libnvidia-container/stable/deb/amd64  Packages [28.0 kB]
+Hit:6 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+Hit:7 http://security.ubuntu.com/ubuntu jammy-security InRelease
+Get:8 https://nvidia.github.io/libnvidia-container/experimental/deb/amd64  Packages [22.8 kB]
+Hit:9 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+Fetched 53.8 kB in 1s (48.4 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  libnvidia-container-tools libnvidia-container1 nvidia-container-toolkit
+  nvidia-container-toolkit-base
+0 upgraded, 4 newly installed, 0 to remove and 153 not upgraded.
+Need to get 8752 kB of archives.
+After this operation, 37.7 MB of additional disk space will be used.
+Get:1 https://nvidia.github.io/libnvidia-container/stable/deb/amd64  libnvidia-container1 1.20.1-1 [1236 kB]
+Get:2 https://nvidia.github.io/libnvidia-container/stable/deb/amd64  libnvidia-container-tools 1.20.1-1 [20.8 kB]
+Get:3 https://nvidia.github.io/libnvidia-container/stable/deb/amd64  nvidia-container-toolkit-base 1.20.1-1 [5993 kB]
+Get:4 https://nvidia.github.io/libnvidia-container/stable/deb/amd64  nvidia-container-toolkit 1.20.1-1 [1501 kB]
+Fetched 8752 kB in 13s (699 kB/s)
+Selecting previously unselected package libnvidia-container1:amd64.
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 42852 files and directories currently installed.)
+Preparing to unpack .../libnvidia-container1_1.20.1-1_amd64.deb ...
+Unpacking libnvidia-container1:amd64 (1.20.1-1) ...
+Selecting previously unselected package libnvidia-container-tools.
+Preparing to unpack .../libnvidia-container-tools_1.20.1-1_amd64.deb ...
+Unpacking libnvidia-container-tools (1.20.1-1) ...
+Selecting previously unselected package nvidia-container-toolkit-base.
+Preparing to unpack .../nvidia-container-toolkit-base_1.20.1-1_amd64.deb ...
+Unpacking nvidia-container-toolkit-base (1.20.1-1) ...
+Selecting previously unselected package nvidia-container-toolkit.
+Preparing to unpack .../nvidia-container-toolkit_1.20.1-1_amd64.deb ...
+Unpacking nvidia-container-toolkit (1.20.1-1) ...
+Setting up nvidia-container-toolkit-base (1.20.1-1) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/nvidia-cdi-refresh.path → /lib/systemd/system/nvidia-cdi-refresh.path.
+Created symlink /etc/systemd/system/multi-user.target.wants/nvidia-cdi-refresh.service → /lib/systemd/system/nvidia-cdi-refresh.service.
+Setting up libnvidia-container1:amd64 (1.20.1-1) ...
+Setting up libnvidia-container-tools (1.20.1-1) ...
+Setting up nvidia-container-toolkit (1.20.1-1) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.13) ...
+time="2026-10-17T18:01:17+05:30" level=info msg="Config file does not exist; using empty config"
+time="2026-10-17T18:01:17+05:30" level=info msg="Wrote updated config to /etc/docker/daemon.json"
+time="2026-10-17T18:01:17+05:30" level=info msg="It is recommended that docker daemon be restarted."
+ NVIDIA Toolkit installed & configured
+[3/5] Checking socat...
+Installing socat...
+Hit:1 https://nvidia.github.io/libnvidia-container/stable/deb/amd64  InRelease
+Hit:2 https://download.docker.com/linux/ubuntu jammy InRelease
+Hit:3 https://nvidia.github.io/libnvidia-container/experimental/deb/amd64  InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu jammy InRelease
+Hit:5 http://security.ubuntu.com/ubuntu jammy-security InRelease
+Hit:6 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+Hit:7 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  libwrap0
+The following NEW packages will be installed:
+  libwrap0 socat
+0 upgraded, 2 newly installed, 0 to remove and 153 not upgraded.
+Need to get 397 kB of archives.
+After this operation, 1493 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libwrap0 amd64 7.6.q-31build2 [47.9 kB]
+Get:2 http://archive.ubuntu.com/ubuntu jammy/main amd64 socat amd64 1.7.4.1-3ubuntu4 [349 kB]
+Fetched 397 kB in 2s (186 kB/s)
+Selecting previously unselected package libwrap0:amd64.
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 42883 files and directories currently installed.)
+Preparing to unpack .../libwrap0_7.6.q-31build2_amd64.deb ...
+Unpacking libwrap0:amd64 (7.6.q-31build2) ...
+Selecting previously unselected package socat.
+Preparing to unpack .../socat_1.7.4.1-3ubuntu4_amd64.deb ...
+Unpacking socat (1.7.4.1-3ubuntu4) ...
+Setting up libwrap0:amd64 (7.6.q-31build2) ...
+Setting up socat (1.7.4.1-3ubuntu4) ...
+Processing triggers for man-db (2.10.2-1) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.13) ...
+socat installed
+[4/5] Configuring Docker permissions...
+User 'atharv' added to docker group
+[5/5] Verifying setup...
+Docker binary: OK
+Docker service: RUNNING
+Docker socket: PRESENT
+srw-rw---- 1 root docker 0 Oct 17 18:00 /var/run/docker.sock
+Docker group membership for 'atharv': OK
+NVIDIA Container Toolkit binary: OK
+Docker NVIDIA runtime: CONFIGURED
+==== Setup Completed: Sat Oct 17 18:01:22 IST 2026 ====
+
+----------------------------------------------------------------
+User 'atharv' was added to the 'docker' group.
+Please REBOOT (or log out and back in) for this to take effect,
+so Docker can be run without sudo.
+----------------------------------------------------------------

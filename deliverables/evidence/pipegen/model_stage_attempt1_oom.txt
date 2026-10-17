@@ -1,0 +1,9 @@
+# PipeGen Model stage attempt 1 - killed by Linux OOM killer (WSL2, 15 GB RAM limit)
+Sat Oct 17 22:43:56 IST 2026
+container exit=0 OOMKilled=true finished=2026-10-17T17:12:29.090298321Z
+[16107.364153] ModelStageWorke invoked oom-killer: gfp_mask=0x140dca(GFP_HIGHUSER_MOVABLE|__GFP_ZERO|__GFP_COMP), order=0, oom_score_adj=0
+[16107.370579] oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=docker-04019f38f190b8e4c4c3bd2e08fa74d7d3a0c35d7d024d3a60b91d0cd3e77012.scope,mems_allowed=0,global_oom,task_memcg=/wsl-user/distro-168/system.slice/docker-04019f38f190b8e4c4c3bd2e08fa74d7d3a0c35d7d024d3a60b91d0cd3e77012.scope,task=PipeGenApp.bin,pid=3602,uid=0
+[16107.371268] Out of memory: Killed process 3602 (PipeGenApp.bin) total-vm:30939148kB, anon-rss:15747488kB, file-rss:104kB, shmem-rss:0kB, UID:0 pgtables:40348kB oom_score_adj:0
+               total        used        free      shared  buff/cache   available
+Mem:           15848         361       15200           3         286       15290
+Swap:           4096         166        3929

@@ -1,0 +1,1 @@
+﻿PipeGen version 0.5.1  (pipegen --version, Ubuntu 22.04.5 on WSL2 3.0.3, 2026-10-17 18:01 +05:30; dpkg status: install ok installed; binary /usr/local/bin/pipegen)

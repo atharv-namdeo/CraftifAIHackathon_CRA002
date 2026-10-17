@@ -1,0 +1,32 @@
+== start 2026-10-18T02:41:35+05:30
+[run.sh] JSON -> /home/atharv/spectra/output/events.json
+make: Entering directory '/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/pipeline/deepstream/parsers'
+make: Nothing to be done for 'all'.
+make: Leaving directory '/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/pipeline/deepstream/parsers'
+Setting pipeline to PAUSED ...
+0:00:10.129560194 [31m 1980[00m 0x5fddf9d5cb00 [36mINFO   [00m [00m    nvinfer_backport gstnvinfer.cpp:684:gst_nvinfer_backport_logger:<nvinferbackport0>[00m NvDsInferContext[UID 1]: Info from NvDsInferContextImpl::deserializeEngineAndBackend() <nvdsinfer_context_impl.cpp:2161> [UID = 1]: deserialized trt engine from :/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/model_stage/vggt.fp16.plan
+0:00:10.129811176 [31m 1980[00m 0x5fddf9d5cb00 [36mINFO   [00m [00m    nvinfer_backport gstnvinfer.cpp:684:gst_nvinfer_backport_logger:<nvinferbackport0>[00m NvDsInferContext[UID 1]: Info from NvDsInferContextImpl::generateBackendContext() <nvdsinfer_context_impl.cpp:2264> [UID = 1]: Use deserialized engine model: /home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/model_stage/vggt.fp16.plan
+0:00:10.220424652 [31m 1980[00m 0x5fddf9d5cb00 [36mINFO   [00m [00m    nvinfer_backport gstnvinfer_impl.cpp:343:notifyLoadModelStatus:<nvinferbackport0>[00m [UID 1]: Load new model:/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/pipeline/deepstream/configs/config_vggt.txt sucessfully
+Implicit layer support has been deprecated
+INFO: [Implicit Engine Info]: layers num: 0
+
+Pipeline is PREROLLING ...
+Failed to query video capabilities: Inappropriate ioctl for device
+[meta_json] file -> /home/atharv/spectra/output/events.json
+Pipeline is PREROLLED ...
+Setting pipeline to PLAYING ...
+Redistribute latency...
+New clock: GstSystemClock
+Redistribute latency...
+nvstreammux: Successfully handled EOS for source_id=0
+Got EOS from element "pipeline0".
+EOS received - stopping pipeline...
+Execution ended after 0:02:37.776640628
+Setting pipeline to NULL ...
+Freeing pipeline ...
+[meta_json] 8 frames, 0 objects
+
+real	3m28.027s
+user	1m40.879s
+sys	3m14.903s
+== exit 0 2026-10-18T02:45:03+05:30

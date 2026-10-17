@@ -1,0 +1,15 @@
+{
+  "pipeline": "video_json_export",
+  "source": "",
+  "min_confidence": 0.000,
+  "frames": [
+    {"frame": 0, "source_id": 0, "pts_ns": 0, "width": 778, "height": 520, "objects": []},
+    {"frame": 1, "source_id": 0, "pts_ns": 250000000, "width": 778, "height": 520, "objects": []},
+    {"frame": 2, "source_id": 0, "pts_ns": 500000000, "width": 778, "height": 520, "objects": []},
+    {"frame": 3, "source_id": 0, "pts_ns": 750000000, "width": 778, "height": 520, "objects": []},
+    {"frame": 4, "source_id": 0, "pts_ns": 1000000000, "width": 778, "height": 520, "objects": []},
+    {"frame": 5, "source_id": 0, "pts_ns": 1250000000, "width": 778, "height": 520, "objects": []},
+    {"frame": 6, "source_id": 0, "pts_ns": 1500000000, "width": 778, "height": 520, "objects": []},
+    {"frame": 7, "source_id": 0, "pts_ns": 1750000000, "width": 778, "height": 520, "objects": []}
+  ]
+}

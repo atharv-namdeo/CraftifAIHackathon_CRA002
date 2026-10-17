@@ -1,0 +1,4 @@
+﻿Digest: sha256:0a9887931b0e38af2e3487ed39e29436b0535c4f3f52e57745baaf79d1898956
+Status: Downloaded newer image for ubuntu:22.04
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 3050 Laptop GPU, 617.42, 4096 MiB

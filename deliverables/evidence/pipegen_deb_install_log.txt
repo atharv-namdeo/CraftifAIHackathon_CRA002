@@ -1,0 +1,16 @@
+﻿Preparing to unpack .../PipeGen_0.5.1_amd64.deb ...
+Unpacking pipegen (0.5.1) ...
+Setting up pipegen (0.5.1) ...
+
+PipeGen installed. Log out and back in (or restart your session)
+for the application launcher to take effect.
+Meanwhile you can start it now by running:  pipegen
+
+--- which
+/usr/local/bin/pipegen
+--- version
+PipeGen version 0.5.1
+--- dpkg
+Package: pipegen
+Status: install ok installed
+Version: 0.5.1

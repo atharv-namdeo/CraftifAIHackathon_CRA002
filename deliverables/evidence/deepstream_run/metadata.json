@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "engine": "VGGT",
+  "runtime": {"backend": "tensorrt", "host": "DeepStream 7.1 nvinfer_backport (PipeGen-generated pipeline)", "precision": "fp16", "engine": "/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/model_stage/vggt.fp16.plan"},
+  "scale": "arbitrary; uncalibrated",
+  "coordinate_convention": "OpenCV camera: +X right, +Y down, +Z forward; extrinsics camera_from_world",
+  "point_source": "VGGT depth unprojected with VGGT intrinsics/extrinsics",
+  "point_count": 50494,
+  "input_point_count": 536648,
+  "confidence_threshold": 2.30859375,
+  "filters": {"confidence_percentile": 50, "max_points": 100000, "voxel_size": 0.005, "outlier_neighbors": 20, "outlier_std_ratio": 2},
+  "cameras": [
+    {"frame_index": 0, "timestamp_seconds": 0, "camera_from_world": [[0.999999997, 2.34879822e-05, 7.41469894e-05, 5.30481339e-06], [-2.34804777e-05, 0.999999995, -0.000101209557, 0.000123023987], [-7.41493662e-05, 0.000101207816, 0.999999992, 2.52127647e-05]], "intrinsic": [[550.582657, 0, 259], [0, 551.981488, 259], [0, 0, 1]], "world_from_camera": [[0.999999997, -2.34804777e-05, -7.41493662e-05, -5.3000552e-06], [2.34879822e-05, 0.999999995, 0.000101207816, -0.000123026662], [7.41469894e-05, -0.000101209557, 0.999999992, -2.52007067e-05], [0, 0, 0, 1]], "center": [-5.3000552e-06, -0.000123026662, -2.52007067e-05]},
+    {"frame_index": 4, "timestamp_seconds": 1, "camera_from_world": [[-0.426941672, -0.288615744, 0.856984108, -0.791015625], [0.343897725, 0.824669561, 0.449059539, -0.440673828], [-0.836334361, 0.486437115, -0.252831503, 1.28125]], "intrinsic": [[515.198518, 0, 259], [0, 517.715771, 259], [0, 0, 1]], "world_from_camera": [[-0.426941672, 0.343897725, -0.836334361, 0.885382594], [-0.288615744, 0.824669561, 0.486437115, -0.488136825], [0.856984108, 0.449059539, -0.252831503, 1.19971697], [0, 0, 0, 1]], "center": [0.885382594, -0.488136825, 1.19971697]}
+  ],
+  "ply": "/home/atharv/spectra/output/cloud.ply",
+  "ply_roundtrip_verified": true,
+  "frame_wall_seconds": 27.0214139,
+  "bounds": {"min": [-1.29777479, -0.408461362, 0.14776893], "max": [0.740755141, 0.296998203, 1.64257312]},
+  "pipegen": {"pipeline_generated_by": "PipeGen v0.5.1", "engine_built_by": "PipeGen v0.5.1", "hand_completed_stages": ["VggtPair", "VggtDecode"]}
+}

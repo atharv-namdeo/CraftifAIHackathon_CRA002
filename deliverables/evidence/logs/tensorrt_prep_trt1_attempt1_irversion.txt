@@ -1,0 +1,31 @@
+﻿python.exe : Traceback (most recent call last):
+At line:1 char:345
++ ... ectra-vggt; & .venv\Scripts\python.exe -m spectra.deployment.tensorrt ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\Atharv\spectra-vggt\spectra\deployment\tensorrt_prep.py", line 212, in <module>
+    main()
+  File "C:\Users\Atharv\spectra-vggt\spectra\deployment\tensorrt_prep.py", line 207, in main
+    manifest = prepare(args.source, args.output, args.rtol, args.atol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Atharv\spectra-vggt\spectra\deployment\tensorrt_prep.py", line 130, in prepare
+    values, evaluated = evaluate_constants(graph, targets, source, opset)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Atharv\spectra-vggt\spectra\deployment\tensorrt_prep.py", line 69, in evaluate_constants
+    session = ort.InferenceSession(model.SerializeToString(), providers=['CPUExecutionProvider'])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Atharv\spectra-vggt\.venv\Lib\site-packages\onnxruntime\capi\onnxruntime_inference_collection.py", 
+line 485, in __init__
+    self._create_inference_session(providers, provider_options, disabled_optimizers)
+  File "C:\Users\Atharv\spectra-vggt\.venv\Lib\site-packages\onnxruntime\capi\onnxruntime_inference_collection.py", 
+line 575, in _create_inference_session
+    sess = C.InferenceSession(session_options, self._model_bytes, False, self._read_config_from_model)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+onnxruntime.capi.onnxruntime_pybind11_state.Fail: [ONNXRuntimeError] : 1 : FAIL : 
+E:\_work\1\s\onnxruntime\core\graph\model.cc:182 onnxruntime::Model::Model Unsupported model IR version: 12, max 
+supported IR version: 11
+

@@ -1,0 +1,25 @@
+# TensorRT ONNX parser check, run inside the PipeGen container (craftifaidocker/deepstream:7.1-amd64-v3)
+# Script: trt_parse.py (trt.OnnxParser.parse_from_file), 2026-10-17
+===== /home/atharv/spectra/model-trt1/vggt.onnx  (TensorRT-prepared bundle, no value_info)
+tensorrt 10.3.0 parse_from_file(...) -> True in 10.6s
+errors: 0
+network layers: 18747 inputs: 1 outputs: 3
+===== /home/atharv/spectra/model/vggt.onnx  (original validated export, run2)
+tensorrt 10.3.0 parse_from_file(...) -> True in 13.3s
+errors: 0
+network layers: 18977 inputs: 1 outputs: 3
+
+Note: PipeGen's per-node ONNX inspection reported 57 unresolved nodes for run2 and
+"parsed: False" (5057 inconclusive) for trt1, while the full-model TensorRT 10.3 parser
+accepts both. trt1 lacked value_info shape annotations; trt2 restores them.
+
+## PipeGen compile attempt 1 (2026-10-17T18:49Z): "ONNX parse failed: Failed to import initializer"
+Cause reproduced in the PipeGen container with scripts/trt_parse_modes.py (TensorRT 10.3.0):
+  parse(bytes) cwd=/opt/PipeGen       -> ok=False, "WeightsContext.cpp:178: Failed to open file: vggt.onnx.data"
+  parse(bytes, path) cwd=/opt/PipeGen -> ok=True, 18751 layers
+  parse(bytes) cwd=model dir          -> ok=True, 18751 layers
+PipeGen parses the model bytes without the file path while its working directory is /opt/PipeGen,
+so external weights (required for models > 2 GB) are looked up in the wrong directory.
+Workaround (no model change): symlink /opt/PipeGen/vggt.onnx.data -> /home/atharv/spectra/repo/models/vggt-onnx/vggt.onnx.data
+After the link: parse(bytes) cwd=/opt/PipeGen -> ok=True, 18751 layers.
+The compile record also showed "precision": "fp32", "fp16": false although FP16 was selected.

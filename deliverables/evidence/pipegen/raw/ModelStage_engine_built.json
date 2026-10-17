@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "steps": {
+    "visualize": {
+      "step": "visualize",
+      "status": "ok",
+      "summary": "5061 graph nodes \u00b7 0 unresolved TensorRT node(s)",
+      "detail": "",
+      "data": {
+        "_data_file": "/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/model_stage/visualize.data.json"
+      },
+      "warnings": [],
+      "artifacts": {},
+      "recorded_at": 1792263476.6441157
+    },
+    "compile": {
+      "step": "compile",
+      "status": "warning",
+      "summary": "FP16 engine built in 506.7s \u2014 1336 TRT layers, 2397.4 MB.",
+      "detail": "**vggt.onnx \u2192 vggt.fp16.plan**  \u00b7  TensorRT 10.3.0\n\nThe engine is on disk and this is the file that gets deployed. Nothing has been run yet, so none of this is a speed measurement \u2014 the build time above is how long it took to CREATE, not how fast it goes.\n\n**Asked for FP16, but the engine is mixed:** FP16 1274 \u00b7 FP32 56 \u00b7 UNKNOWN 6.\n\nTensorRT falls back when a layer has no kernel at the precision you asked for. This is the usual reason a speed-up comes in smaller than expected \u2014 the layers that fell back are still running at the slower format.\n\n**Layout conversion \u2014 1% of layers**\n\n14 of 1336 layers do no maths. They only rearrange data so the next layer can read it.\n\nAround 8% is normal at FP32. What this number is really for is comparing two builds of the SAME model: a jump after a precision change is the cost of extra shuffling, not a worse choice of kernel.\n\n**What the engine is made of**\n\n| Kind | Count | What it does |\n|---|---:|---|\n| kgen | 703 | \u2014 |\n| gemm | 544 | \u2014 |\n| CaskConvolution | 31 | convolutions |\n| Reformat | 14 | layout/precision conversion \u2014 overhead, not maths |\n| NoOp | 8 | removed entirely |\n| Constant | 7 | \u2014 |\n| PointWiseV2 | 7 | elementwise maths, fused |\n| Shuffle | 5 | reshapes and transposes |\n| Resize | 5 | resizing |\n| Slice | 4 | slicing |\n| shape_call | 2 | \u2014 |\n| CaskGemmDeconvolution | 2 | \u2014 |\n\nThese are TensorRT's own kernel families, after it merged what it could \u2014 which is why the count does not match the ONNX node count.",
+      "data": {
+        "_data_file": "/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/model_stage/compile.data.json"
+      },
+      "warnings": [
+        "First build on this GPU, so every kernel had to be timed (507s). The timings are now cached; rebuilding this model after surgery or quantization will be far quicker."
+      ],
+      "artifacts": {
+        "engine": "/home/atharv/.pipegen/namdeoatharv0/0707a4b2-14ab-4aa5-8a49-3785e6429d55/model_stage/vggt.fp16.plan"
+      },
+      "recorded_at": 1792264326.6044807
+    }
+  },
+  "constraint": {},
+  "choices": {
+    "selected_artifact": "baseline",
+    "optimization_decision": "",
+    "quantization_preparation": {}
+  }
+}
